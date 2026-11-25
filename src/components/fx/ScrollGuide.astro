@@ -1,0 +1,22 @@
+---
+/**
+ * Progress guide: a top progress bar (CSS scroll timeline) and, on wide
+ * screens, a chapter rail of real anchor links. The active chapter is marked
+ * by scripts/fx.ts; without JS the links still work.
+ */
+interface Props { chapters: { id: string; label: string }[] }
+const { chapters } = Astro.props;
+---
+<div class="scroll-progress" aria-hidden="true"></div>
+<nav class="chapters" aria-label="Sections on this page" data-chapters>
+  <ol>
+    {chapters.map((c) => (
+      <li>
+        <a href={`#${c.id}`} data-chapter={c.id}>
+          <span class="dot" aria-hidden="true"></span>
+          <span class="label">{c.label}</span>
+        </a>
+      </li>
+    ))}
+  </ol>
+</nav>

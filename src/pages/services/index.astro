@@ -1,0 +1,96 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import ServiceBento from '@/components/ServiceBento.astro';
+import CtaBand from '@/components/CtaBand.astro';
+import Icon from '@/components/Icon.astro';
+import PageHero from '@/components/PageHero.astro';
+import Backdrop from '@/components/fx/Backdrop.astro';
+import { services, serviceUrl } from '@/data/services';
+import { abs } from '@/lib/schema';
+
+const title = 'Cleaning Services in Dallas, TX: Home & Office | Chavez';
+const description =
+  'Compare house, deep, weekly/biweekly, move-in/move-out, office and post-construction cleaning from Chavez House Cleaning in Dallas, TX. Free quotes.';
+
+const itemList = {
+  '@type': 'ItemList',
+  name: 'Chavez House Cleaning services',
+  itemListElement: services.map((s, i) => ({ '@type': 'ListItem', position: i + 1, url: abs(serviceUrl(s.slug)), name: s.name })),
+};
+
+const compare = [
+  { need: 'Keep a clean home clean', pick: 'house-cleaning', why: 'Standard checklist, one time or on a schedule.' },
+  { need: 'Catch up on months of dust and grime', pick: 'deep-cleaning', why: 'Adds baseboards, vents, blinds, fixtures and appliances.' },
+  { need: 'Never think about it again', pick: 'recurring-cleaning', why: 'Weekly, biweekly or every-4-weeks visits.' },
+  { need: 'Moving in or out', pick: 'move-in-move-out-cleaning', why: 'Inside cabinets, closets and appliances of an empty home.' },
+  { need: 'A cleaner office or studio', pick: 'office-cleaning', why: 'After-hours cleaning on a custom checklist.' },
+  { need: 'Just finished a remodel', pick: 'post-construction-cleaning', why: 'Fine construction dust removed from every surface.' },
+];
+const nameOf = (slug: string) => services.find((s) => s.slug === slug)!.name;
+---
+<BaseLayout title={title} description={description} path="/services/" breadcrumbs={[{ name: 'Services', href: '/services/' }]} pageType="CollectionPage" schema={[itemList]}>
+  <PageHero
+    eyebrow="Services"
+    title="Cleaning services in Dallas, TX"
+    lead="Six services for homes and offices, each with its own checklist. Not sure which one fits? Use the guide below or call us and we will help you choose."
+    photo="kitchen-navy-range"
+    photoAlt="Kitchen with navy cabinets and a stainless range after a Chavez House Cleaning visit"
+    position="50% 55%"
+  />
+
+  <section class="section fx-section grain" aria-labelledby="all-h">
+    <Backdrop variant="mesh" />
+    <div class="wrap">
+      <p class="chapter-tag"><span class="n">01</span>All services</p>
+      <h2 id="all-h" class="fx-title big-h">Pick a service to see its full checklist</h2>
+      <ServiceBento />
+    </div>
+  </section>
+
+  <section class="section section--white fx-section grain" aria-labelledby="choose-h">
+    <Backdrop variant="bars" flip />
+    <div class="wrap">
+      <p class="chapter-tag"><span class="n">02</span>Quick guide</p>
+      <h2 id="choose-h" class="fx-title big-h">Which cleaning do you need?</h2>
+      <ol class="guide">
+        {compare.map((c, i) => (
+          <li data-reveal>
+            <a href={serviceUrl(c.pick)}>
+              <span class="g-n" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+              <span class="g-need">{c.need}</span>
+              <span class="g-pick"><strong>{nameOf(c.pick)}</strong><span>{c.why}</span></span>
+              <span class="g-go" aria-hidden="true"><Icon name="arrow" /></span>
+            </a>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <CtaBand heading="Not sure which service to book?" text="Describe your home and what you need. We will recommend the right cleaning and send a free quote." />
+</BaseLayout>
+
+<style>
+  .big-h { font-size: clamp(2rem, 1.4rem + 2.4vw, 3.2rem); letter-spacing: -0.03em; margin-bottom: clamp(2rem, 1.5rem + 2vw, 3rem); max-width: 22ch; }
+  .guide { list-style: none; margin: 0; padding: 0; }
+  .guide a {
+    display: grid; grid-template-columns: auto 1fr; gap: 0.4rem 1.25rem; align-items: center;
+    padding: 1.4rem 0.25rem; border-top: 1px solid var(--line); text-decoration: none; color: var(--ink);
+  }
+  .guide li:last-child a { border-bottom: 1px solid var(--line); }
+  .g-n { font: 400 0.85rem/1 var(--font-display); color: var(--mint-ink); grid-row: span 2; align-self: start; padding-top: 0.4rem; }
+  .g-need { font: 400 clamp(1.25rem, 1rem + 0.9vw, 1.65rem)/1.15 var(--font-display); letter-spacing: -0.02em; transition: color 0.25s ease, translate 0.35s cubic-bezier(0.2, 0.8, 0.2, 1); }
+  .g-pick { color: var(--muted); }
+  .g-pick strong { color: var(--mint-ink); margin-right: 0.5rem; }
+  .g-go { display: none; }
+  .guide a:hover .g-need, .guide a:focus-visible .g-need { color: var(--blue); translate: 8px 0; }
+  @media (min-width: 900px) {
+    .guide a { grid-template-columns: 3rem 1fr 1fr auto; }
+    .g-n { grid-row: auto; padding-top: 0; align-self: center; }
+    .g-go {
+      display: grid; place-items: center; width: 3rem; height: 3rem; border-radius: 50%; border: 1.5px solid var(--line);
+      transition: background-color 0.3s ease, border-color 0.3s ease, rotate 0.4s ease;
+    }
+    .guide a:hover .g-go, .guide a:focus-visible .g-go { background: var(--mint); border-color: var(--mint); rotate: -40deg; }
+  }
+</style>

@@ -1,0 +1,158 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { getImage } from 'astro:assets';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Photo from '@/components/Photo.astro';
+import Icon from '@/components/Icon.astro';
+import Faq from '@/components/Faq.astro';
+import CtaBand from '@/components/CtaBand.astro';
+import ServiceCards from '@/components/ServiceCards.astro';
+import PageHero from '@/components/PageHero.astro';
+import Backdrop from '@/components/fx/Backdrop.astro';
+import DallasMap from '@/components/DallasMap.astro';
+import { areaPages, areas, type AreaPage } from '@/data/areas';
+import { localForHub, localUrl, cityBySlug } from '@/data/local';
+import { services as allServices } from '@/data/services';
+import { photos, type PhotoSlug } from '@/data/photos';
+
+export const getStaticPaths = (() => areaPages.map((a) => ({ params: { area: a.slug }, props: { page: a } }))) satisfies GetStaticPaths;
+
+const { page: a } = Astro.props as { page: AreaPage };
+const path = `/service-areas/${a.slug}/`;
+const local = areas.filter((x) => x.hub === a.slug);
+const other = areaPages.find((x) => x.slug !== a.slug)!;
+const og = await getImage({ src: photos[a.photo], width: 1200, height: 630, fit: 'cover', format: 'jpg' });
+// Landscape crop for the full-bleed hero when one exists.
+const heroPhoto: PhotoSlug = a.photo;
+---
+<BaseLayout
+  title={a.seo.title}
+  description={a.seo.description}
+  path={path}
+  ogImage={og.src}
+  breadcrumbs={[{ name: 'Service Areas', href: '/service-areas/' }, { name: a.name, href: path }]}
+>
+  <PageHero eyebrow={a.eyebrow} title={a.h1} lead={a.lead} photo={heroPhoto} photoAlt={a.photoAlt} position="50% 45%" />
+
+  <section class="section map-sec" aria-label="Map of the neighborhoods we serve">
+    <div class="wrap"><DallasMap /></div>
+  </section>
+
+  <section class="section section--white fx-section grain" aria-labelledby="where-h">
+    <Backdrop variant="map" />
+    <div class="wrap two">
+      <div class="prose">
+        <p class="chapter-tag"><span class="n">01</span>Local know-how</p>
+        {a.sections.map((sec, i) => (
+          <>
+            <h2 id={i === 0 ? 'where-h' : undefined} class={i === 0 ? 'fx-title big-h' : undefined}>{sec.heading}</h2>
+            {sec.paragraphs.map((p) => <p>{p}</p>)}
+          </>
+        ))}
+      </div>
+      <div class="card served">
+        <h2 class="small-h">Areas covered from this page</h2>
+        <ul>
+          {local.map((x) => (
+            <li><Icon name="pin" size={16} /><span>{x.name}</span><small>{x.kind}</small></li>
+          ))}
+        </ul>
+        <p class="tiny">We are a mobile team and do not operate a storefront office in these areas.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--deep fx-section on-dark grain" aria-labelledby="gallery-h">
+    <Backdrop variant="bars" tone="dark" flip />
+    <div class="wrap">
+      <div class="head-split">
+        <div>
+          <p class="chapter-tag"><span class="n">02</span>From our jobs</p>
+          <h2 id="gallery-h" class="fx-title big-h">Recent cleaning work</h2>
+        </div>
+        <p class="head-aside">Photos taken by the Chavez House Cleaning team on real jobs.</p>
+      </div>
+      <div class="gallery">
+        {a.gallery.map((g, i) => (
+          <figure class={`figure depth depth--plate g${i + 1}`}>
+            <div class="depth-card" data-tilt="7">
+              <Photo slug={g.slug} alt={g.alt} sizes="(min-width: 900px) 360px, 90vw" widths={[360, 560, 740]} aspect="4 / 5" class="photo-in" />
+            </div>
+            <figcaption>{g.caption}</figcaption>
+          </figure>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section fx-section grain" aria-labelledby="popular-h">
+    <Backdrop variant="mesh" />
+    <div class="wrap">
+      <div class="head-split">
+        <div>
+          <p class="chapter-tag"><span class="n">03</span>Services</p>
+          <h2 id="popular-h" class="fx-title big-h">{a.homesHeading}</h2>
+        </div>
+      </div>
+      <ul class="popular">
+        {a.homes.map((h, i) => <li data-reveal><span class="pn" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span><span><strong>{h.title}</strong><span>{h.text}</span></span></li>)}
+      </ul>
+      <ServiceCards only={a.slug === 'dallas' ? ['house-cleaning', 'deep-cleaning', 'office-cleaning', 'move-in-move-out-cleaning'] : ['house-cleaning', 'deep-cleaning', 'recurring-cleaning', 'move-in-move-out-cleaning']} />
+      <p class="after-link"><a class="btn btn--ghost" href={`/service-areas/${other.slug}/`}>Also serving {other.eyebrow}<Icon name="arrow" /></a></p>
+    </div>
+  </section>
+
+  <Faq items={a.faqs} heading={`Cleaning in ${a.name}: questions`} class="section--white fx-section grain" chapter="04">
+    <Backdrop slot="backdrop" variant="mesh" flip />
+  </Faq>
+
+  <section class="section fx-section grain" aria-labelledby="local-h">
+    <Backdrop variant="map" />
+    <div class="wrap">
+      <p class="chapter-tag"><span class="n">05</span>By neighborhood</p>
+      <h2 id="local-h" class="fx-title">Cleaning services by neighborhood</h2>
+      <ul class="local-links">
+        {localForHub(a.slug).map((x) => (
+          <li><a href={localUrl(x.service, x.city)}>{allServices.find((s) => s.slug === x.service)!.name} in {cityBySlug(x.city).name}<Icon name="arrow" size={16} /></a></li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <CtaBand heading={`Get a cleaning quote in ${a.name}`} text="Tell us your neighborhood, the size of your home and the type of cleaning you need." />
+</BaseLayout>
+
+<style>
+  .map-sec { background: var(--paper); padding-top: 0; }
+  .big-h { font-size: clamp(2rem, 1.4rem + 2.4vw, 3.2rem); letter-spacing: -0.03em; }
+  .two { display: grid; gap: 3rem; align-items: start; }
+  @media (min-width: 900px) { .two { grid-template-columns: 1.3fr 0.7fr; gap: 5rem; } .served { position: sticky; top: calc(var(--header-h) + 1.5rem); } }
+  .prose .big-h { margin-top: 0; }
+  .small-h { font-size: var(--step-1); }
+  .served { border-radius: var(--radius-lg); box-shadow: var(--shadow); }
+  .served ul { list-style: none; margin: 0 0 1rem; padding: 0; display: grid; gap: 0.5rem; }
+  .served li { display: grid; grid-template-columns: auto 1fr; column-gap: 0.5rem; align-items: center; color: var(--ink); font-weight: 600; }
+  .served li :global(svg) { color: var(--mint-ink); grid-row: span 2; }
+  .served small { grid-column: 2; color: var(--muted); font-weight: 400; font-size: 0.82rem; }
+  .tiny { font-size: 0.85rem; color: var(--muted); margin: 0; }
+
+  .head-split { display: grid; gap: 1rem 4rem; align-items: end; margin-bottom: clamp(2rem, 1.5rem + 2vw, 3rem); }
+  @media (min-width: 960px) { .head-split { grid-template-columns: 1.2fr 0.8fr; } }
+  .head-split h2 { margin-bottom: 0; }
+  .head-aside { color: var(--muted); margin: 0; }
+  .section--deep .head-aside { color: #c4d4e6; }
+
+  .gallery { display: grid; gap: 2rem 1.75rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); padding-right: 14px; }
+  @media (min-width: 900px) { .gallery .g2 { translate: 0 2.5rem; } }
+  .gallery figcaption { color: #c4d4e6; margin-top: 1.4rem; }
+
+  .popular { list-style: none; margin: 0 0 2.5rem; padding: 0; display: grid; gap: 0 2rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); }
+  .popular li { display: grid; grid-template-columns: auto 1fr; gap: 1rem; padding: 1.25rem 0; border-top: 1px solid var(--line); }
+  .pn { font: 400 1.8rem/1 var(--font-display); color: transparent; -webkit-text-stroke: 1.2px var(--ink); }
+  .popular strong { display: block; color: var(--ink); }
+  .popular span span { color: var(--muted); }
+  .after-link { margin-top: 2rem; }
+  .local-links { list-style: none; padding: 0; margin: 2rem 0 0; display: grid; gap: 0.75rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); }
+  .local-links a { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: 1rem 1.2rem; border: 1px solid var(--line); border-radius: 14px; background: var(--white); font-weight: 600; text-decoration: none; color: var(--ink); transition: border-color 0.2s ease, transform 0.2s ease; }
+  .local-links a:hover { border-color: var(--mint); transform: translateY(-2px); }
+</style>

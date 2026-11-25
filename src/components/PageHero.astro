@@ -1,0 +1,81 @@
+---
+/**
+ * Inner-page hero (Chavez): warm split layout. Copy on a soft paper panel with
+ * the brand "wipe" arcs; the photo sits in a tall arch on the right.
+ * Mobile: the photo comes first as a banner and the short copy sits below it
+ * (Helice mobile rule). The photo is the LCP image (eager, high priority).
+ */
+import Photo from './Photo.astro';
+import Icon from './Icon.astro';
+import Swoosh from './Swoosh.astro';
+import { SITE } from '@/config/site';
+import { useStrings } from '@/i18n';
+import type { PhotoSlug } from '@/data/photos';
+
+interface Props {
+  eyebrow: string;
+  title: string;
+  lead?: string;
+  photo: PhotoSlug;
+  photoAlt: string;
+  position?: string;
+  service?: string;
+  ctas?: boolean;
+  compact?: boolean;
+  /** Optional muted clip from /public/media played inside the arch (photo stays as LCP + fallback). */
+  clip?: string;
+}
+const { eyebrow, title, lead, photo, photoAlt, position = '50% 50%', ctas = true, compact = false, clip } = Astro.props;
+const t = useStrings();
+---
+<section class:list={['page-hero', compact && 'page-hero--compact']}>
+  <div class="wrap ph-grid">
+    <div class="ph-media">
+      <Photo slug={photo} alt={photoAlt} sizes="(min-width: 900px) 480px, 100vw" widths={[420, 640, 900, 1200]} quality={62} priority position={position} />
+      {clip && (
+        <video class="ph-clip" muted playsinline preload="none" data-autoplay aria-hidden="true">
+          <source src={`/media/${clip}.webm`} type="video/webm" />
+          <source src={`/media/${clip}.mp4`} type="video/mp4" />
+        </video>
+      )}
+      <Swoosh class="ph-swoosh" width={130} />
+    </div>
+    <div class="ph-copy">
+      <p class="ph-chip"><Icon name="sparkles" size={16} /> {eyebrow}</p>
+      <h1>{title}</h1>
+      {lead && <p class="lead">{lead}</p>}
+      {ctas && (
+        <div class="btn-row">
+          <a class="btn btn--mint" href={SITE.phone.href} data-track="call_click"><Icon name="phone" />{t.cta.call} {SITE.phone.display}</a>
+          <a class="btn btn--ghost" href={SITE.phone.sms} data-track="sms_click"><Icon name="message" />{t.cta.text}</a>
+        </div>
+      )}
+      <slot />
+    </div>
+  </div>
+</section>
+
+<style>
+  .page-hero { position: relative; overflow: clip; background: var(--paper); background-image: radial-gradient(circle at 85% 10%, rgb(255 181 71 / 0.18), transparent 35%), radial-gradient(circle at 0% 100%, rgb(75 176 251 / 0.16), transparent 40%); }
+  .ph-grid { display: grid; gap: clamp(2rem, 1.5rem + 3vw, 4rem); align-items: center; padding-block: clamp(2rem, 1rem + 4vw, 4.5rem); }
+  @media (min-width: 900px) { .ph-grid { grid-template-columns: 1.1fr 0.9fr; } .ph-media { order: 2; } }
+  .ph-media { position: relative; max-width: 480px; width: 100%; justify-self: center; }
+  .ph-media :global(.photo) { aspect-ratio: 4 / 4.6; border-radius: 240px 240px 32px 32px; box-shadow: 0 40px 70px -40px rgb(15 42 74 / 0.55); }
+  .page-hero--compact .ph-media :global(.photo) { aspect-ratio: 4 / 3.4; }
+  :global(.ph-swoosh) { position: absolute; right: -2.25rem; top: 0.5rem; }
+  .ph-clip { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: 240px 240px 32px 32px; opacity: 0; transition: opacity 0.8s ease; }
+  .ph-clip:global(.is-playing) { opacity: 1; }
+  .ph-chip { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.4rem 0.85rem; border-radius: 999px; background: var(--white); border: 1px solid var(--line); font-size: 0.82rem; font-weight: 700; color: var(--ink); margin-bottom: 1.1rem; }
+  .ph-chip :global(svg) { color: var(--mint-ink); }
+  .page-hero h1 { font-size: clamp(2.2rem, 1.5rem + 3vw, 4rem); line-height: 1.04; letter-spacing: -0.02em; max-width: 17ch; }
+  .page-hero .lead { max-width: 56ch; margin-bottom: 1.6rem; }
+  @media (max-width: 899px) {
+    .ph-grid { padding-top: 0; }
+    .ph-media { max-width: none; margin-inline: calc(var(--gutter) * -1); width: calc(100% + var(--gutter) * 2); }
+    .ph-media :global(.photo) { aspect-ratio: 4 / 3; border-radius: 0 0 120px 0; box-shadow: none; }
+    .ph-clip { border-radius: 0 0 120px 0; }
+    :global(.ph-swoosh) { display: none; }
+    .page-hero h1 { font-size: clamp(2rem, 1.5rem + 3vw, 2.6rem); }
+    .page-hero .lead { font-size: 1rem; }
+  }
+</style>

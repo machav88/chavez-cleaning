@@ -1,0 +1,27 @@
+---
+/**
+ * Section background (Chavez v3): a photo of a clean SPACE (no people) under a
+ * brand veil, instead of abstract patterns. Variant picks the room type:
+ *  - mesh: living spaces · bars: kitchen/bath · map: Dallas.
+ * `flip` alternates the photo so consecutive sections differ. Decorative only.
+ */
+import SectionBg from '../SectionBg.astro';
+import type { PhotoSlug } from '@/data/photos';
+interface Props {
+  variant: 'bars' | 'mesh' | 'map';
+  tone?: 'light' | 'dark';
+  flip?: boolean;
+}
+const { variant, tone = 'light', flip = false } = Astro.props;
+const pick: Record<Props['variant'], [PhotoSlug, PhotoSlug]> = {
+  mesh: ['bg-living-white', 'space-bedroom-neutral'],
+  bars: ['bg-kitchen-bright', 'space-bath-glass'],
+  map: ['dallas-bridge', 'west-end-street'],
+};
+const slug = pick[variant][flip ? 1 : 0];
+---
+{variant === 'map' ? <SectionBg slug={slug} tone={tone} /> : <div class:list={['soft', tone === 'dark' && 'soft--dark']} aria-hidden="true" />}
+<style>
+  .soft { position: absolute; inset: 0; z-index: -1; background: radial-gradient(circle at 90% 10%, rgb(255 181 71 / 0.12), transparent 40%), radial-gradient(circle at 5% 95%, rgb(75 176 251 / 0.12), transparent 45%); }
+  .soft--dark { background: radial-gradient(circle at 90% 10%, rgb(75 176 251 / 0.18), transparent 45%); }
+</style>

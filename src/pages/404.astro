@@ -1,0 +1,32 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Backdrop from '@/components/fx/Backdrop.astro';
+import Icon from '@/components/Icon.astro';
+import { services, serviceUrl } from '@/data/services';
+---
+<BaseLayout title="Page not found | Chavez House Cleaning" description="The page you are looking for does not exist. Find our cleaning services, service areas or contact Chavez House Cleaning." path="/404/" noindex>
+  <section class="fx-section grain nf">
+    <Backdrop variant="mesh" />
+    <div class="wrap">
+      <p class="eyebrow"><Icon name="mark" /> Error 404</p>
+      <h1>We cleaned up, but this page isn’t here</h1>
+      <p class="lead">The link may be old or mistyped. Here are some places to go instead:</p>
+      <div class="btn-row">
+        <a class="btn" href="/">Go to the homepage</a>
+        <a class="btn btn--ghost" href="/contact/">Contact us</a>
+      </div>
+      <h2>Cleaning services</h2>
+      <ul class="links">
+        {services.map((s) => <li><a href={serviceUrl(s.slug)}>{s.name}</a></li>)}
+        <li><a href="/service-areas/">Service areas</a></li>
+      </ul>
+    </div>
+  </section>
+</BaseLayout>
+<style>
+  .nf { padding-block: clamp(3rem, 2rem + 4vw, 6rem); }
+  h1 { max-width: 18ch; }
+  h2 { font-size: var(--step-1); margin-top: 3rem; }
+  .links { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .links a { display: inline-block; padding: 0.5rem 1rem; border-radius: 999px; background: var(--white); border: 1px solid var(--line); text-decoration: none; font-weight: 600; }
+</style>

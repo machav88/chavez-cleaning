@@ -1,0 +1,10 @@
+---
+/** Brand signature: the two curved "wipe" strokes + sparkle from the Chavez logo. Decorative. */
+interface Props { class?: string; width?: number; sparkle?: boolean }
+const { class: cls, width = 120, sparkle = true } = Astro.props;
+---
+<svg class:list={['swoosh', cls]} width={width} height={width * 0.8} viewBox="0 0 120 96" aria-hidden="true" focusable="false">
+  <path pathLength="1" d="M78 8c10 22 8 48-14 66" />
+  <path pathLength="1" d="M104 40c-4 26-24 46-52 50" />
+  {sparkle && <path style="fill:currentColor;stroke:none" d="M100 4l2.4 6.6L109 13l-6.6 2.4L100 22l-2.4-6.6L91 13l6.6-2.4z" />}
+</svg>

@@ -1,0 +1,28 @@
+{
+  "name": "chavez-house-cleaning",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Chavez House Cleaning LLC — static, SEO-first website (Dallas, TX). Deployed on Cloudflare.",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "qa": "node scripts/qa.mjs"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.4",
+    "@fontsource-variable/dm-sans": "^5.3.0",
+    "@fontsource/caveat": "^5.3.0",
+    "@fontsource/young-serif": "^5.3.0",
+    "astro": "^5.18.2",
+    "motion": "^14.7.1",
+    "sharp": "^0.35.5"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.12",
+    "axe-core": "^4.10.2",
+    "typescript": "^5.9.3"
+  }
+}

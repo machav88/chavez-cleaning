@@ -1,0 +1,58 @@
+---
+/**
+ * Direct contact channels (replaces the old quote form).
+ * Big, obvious buttons: call, text message or email.
+ */
+import Icon from '@/components/Icon.astro';
+import { SITE } from '@/config/site';
+
+interface Props { id?: string; service?: string; tone?: 'dark' | 'light' }
+const { id, service, tone = 'dark' } = Astro.props;
+const subject = encodeURIComponent(service ? `Cleaning quote request: ${service.replace(/-/g, ' ')}` : 'Cleaning quote request');
+const channels = [
+  { icon: 'phone', label: 'Call us', value: SITE.phone.display, href: SITE.phone.href, track: 'call_click', note: 'Talk to a real person' },
+  { icon: 'message', label: 'Send a text', value: SITE.phone.display, href: SITE.phone.sms, track: 'sms_click', note: 'Photos of your space welcome' },
+  { icon: 'mail', label: 'Email us', value: SITE.email, href: `mailto:${SITE.email}?subject=${subject}`, track: 'email_click', note: 'We reply with your free quote' },
+] as const;
+---
+<ul class:list={['channels-x', tone === 'light' && 'channels-x--light']} id={id}>
+  {channels.map((c) => (
+    <li>
+      <a href={c.href} data-track={c.track}>
+        <span class="cx-ic"><Icon name={c.icon} size={24} /></span>
+        <span class="cx-txt">
+          <strong>{c.label}</strong>
+          <span class:list={['cx-val', { 'cx-val--long': c.value.length > 20 }]}>{c.value}</span>
+          <span class="cx-note">{c.note}</span>
+        </span>
+        <span class="cx-go" aria-hidden="true"><Icon name="arrow" /></span>
+      </a>
+    </li>
+  ))}
+</ul>
+
+<style>
+  .channels-x { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.9rem; scroll-margin-top: calc(var(--header-h) + 1.5rem); }
+  .channels-x a {
+    display: flex; align-items: center; gap: 1rem; padding: 1.1rem 1.2rem; min-height: 84px;
+    color: #fff; text-decoration: none; border-radius: 18px;
+    background: rgb(255 255 255 / 0.08); border: 1px solid rgb(255 255 255 / 0.2);
+    box-shadow: 0 30px 60px -40px rgb(0 0 0 / 0.8);
+    transition: border-color 0.2s ease, background-color 0.2s ease, transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .channels-x a:hover, .channels-x a:focus-visible { border-color: var(--mint); background: rgb(255 255 255 / 0.13); transform: translateY(-3px); }
+  .cx-ic { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 14px; background: var(--mint); color: #0f2a4a; flex: none; }
+  .cx-txt { display: grid; min-width: 0; flex: 1; }
+  .cx-txt strong { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.07em; color: #b5c9df; }
+  .cx-val { font-size: 1.15rem; font-weight: 700; overflow-wrap: anywhere; }
+  .cx-val--long { font-size: clamp(0.82rem, 0.7rem + 0.5vw, 1rem); }
+  .cx-note { font-size: 0.88rem; color: #c9cdea; }
+  .cx-go { color: var(--mint); flex: none; transition: transform 0.25s ease; }
+  .channels-x a:hover .cx-go { transform: translateX(4px); }
+  .channels-x--light a { color: var(--ink); background: var(--paper); border-color: var(--line); box-shadow: none; }
+  .channels-x--light a:hover, .channels-x--light a:focus-visible { background: var(--mint-wash); border-color: var(--blue); }
+  .channels-x--light .cx-txt strong { color: var(--mint-ink); }
+  .channels-x--light .cx-note { color: var(--muted); }
+  .channels-x--light .cx-go { color: var(--mint-ink); }
+  .channels-x--light li:first-child .cx-ic { background: var(--sun); }
+</style>

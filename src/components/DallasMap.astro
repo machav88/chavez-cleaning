@@ -1,0 +1,78 @@
+---
+/**
+ * Illustrated service map of central Dallas (not to scale). Positions are
+ * approximate relative locations of real neighborhoods; the East Dallas base
+ * (75223) pulses and the rings show the short drive to core areas.
+ * Each pin is a real link (HTML text under the SVG keeps everything crawlable).
+ */
+type Pin = { name: string; x: number; y: number; href: string; core?: boolean };
+const pins: Pin[] = [
+  { name: 'University Park', x: 300, y: 80, href: '/service-areas/park-cities/' },
+  { name: 'Highland Park', x: 270, y: 150, href: '/services/house-cleaning/highland-park/' },
+  { name: 'Knox-Henderson', x: 370, y: 200, href: '/service-areas/dallas/' },
+  { name: 'Oak Lawn', x: 215, y: 245, href: '/service-areas/dallas/' },
+  { name: 'Uptown', x: 300, y: 285, href: '/services/house-cleaning/uptown/', core: true },
+  { name: 'M Streets', x: 470, y: 185, href: '/services/house-cleaning/lower-greenville/' },
+  { name: 'Lower Greenville', x: 480, y: 255, href: '/services/house-cleaning/lower-greenville/', core: true },
+  { name: 'Lakewood', x: 640, y: 230, href: '/services/house-cleaning/swiss-avenue/' },
+  { name: 'Swiss Avenue', x: 530, y: 330, href: '/services/house-cleaning/swiss-avenue/', core: true },
+  { name: 'Downtown', x: 320, y: 395, href: '/services/office-cleaning/downtown-dallas/' },
+  { name: 'Deep Ellum', x: 430, y: 405, href: '/services/office-cleaning/deep-ellum/' },
+];
+const base = { x: 610, y: 370 };
+---
+<figure class="dmap">
+  <svg viewBox="0 0 800 480" role="img" aria-labelledby="dmap-t" class="dmap-svg">
+    <title id="dmap-t">Illustrated map of the Dallas neighborhoods Chavez House Cleaning serves, with the team’s base in East Dallas</title>
+    <defs>
+      <pattern id="dgrid" width="32" height="32" patternUnits="userSpaceOnUse"><path d="M32 0H0V32" fill="none" stroke="currentColor" stroke-opacity=".08" /></pattern>
+    </defs>
+    <rect width="800" height="480" fill="url(#dgrid)" />
+    <!-- White Rock Lake -->
+    <path class="lake" d="M690 120c40-10 80 20 74 66-5 40-40 60-72 50-30-9-46-40-36-72 6-22 16-38 34-44z" />
+    <text class="lake-t" x="720" y="266" text-anchor="middle">White Rock Lake</text>
+    <!-- Highways (stylized) -->
+    <path class="hwy" d="M120 470C220 360 260 300 300 200S360 40 380 0" />
+    <path class="hwy" d="M0 420C200 410 420 420 800 400" />
+    <path class="hwy hwy--thin" d="M420 480C440 360 470 280 520 160S600 30 640 0" />
+    <!-- Drive rings from the East Dallas base -->
+    <circle class="ring" cx={base.x} cy={base.y} r="150" />
+    <circle class="ring ring--2" cx={base.x} cy={base.y} r="300" />
+    {pins.map((p) => (
+      <a href={p.href} class:list={['pin', p.core && 'pin--core']}>
+        <circle cx={p.x} cy={p.y} r={p.core ? 9 : 6} />
+        <text x={p.x + 14} y={p.y + 5}>{p.name}</text>
+      </a>
+    ))}
+    <g class="base">
+      <circle class="base-pulse" cx={base.x} cy={base.y} r="16" />
+      <circle cx={base.x} cy={base.y} r="11" />
+      <text x={base.x + 4} y={base.y + 44} text-anchor="middle">Our base · East Dallas 75223</text>
+    </g>
+  </svg>
+  <figcaption>Illustrated map, not to scale. Core areas are highlighted; tap a neighborhood to see its page.</figcaption>
+</figure>
+
+<style>
+  .dmap { margin: 0; position: relative; border-radius: 32px; overflow: hidden; background: var(--ink); color: #9fc3e8; box-shadow: 0 40px 70px -40px rgb(15 42 74 / 0.6); }
+  .dmap-svg { width: 100%; height: auto; display: block; }
+  .lake { fill: rgb(75 176 251 / 0.22); stroke: rgb(75 176 251 / 0.5); }
+  .lake-t { fill: #9fc3e8; font: 600 13px var(--font-body); }
+  .hwy { fill: none; stroke: rgb(255 255 255 / 0.14); stroke-width: 10; stroke-linecap: round; }
+  .hwy--thin { stroke-width: 6; }
+  .ring { fill: rgb(75 176 251 / 0.07); stroke: rgb(75 176 251 / 0.4); stroke-dasharray: 4 8; }
+  .ring--2 { fill: none; stroke-opacity: 0.25; }
+  .pin circle { fill: #9fc3e8; stroke: var(--ink); stroke-width: 3; transition: r 0.2s ease, fill 0.2s ease; }
+  .pin text { fill: #e6eef8; font: 600 15px var(--font-body); paint-order: stroke; stroke: var(--ink); stroke-width: 4px; }
+  .pin--core circle { fill: var(--sky); }
+  .pin--core text { font-size: 17px; fill: #fff; }
+  .pin:hover circle, .pin:focus-visible circle { fill: var(--sun); }
+  .pin:focus-visible { outline: none; }
+  .pin:focus-visible text { text-decoration: underline; }
+  .base circle { fill: var(--sun); stroke: var(--ink); stroke-width: 3; }
+  .base .base-pulse { fill: rgb(255 181 71 / 0.35); stroke: none; transform-origin: 610px 370px; }
+  .base text { fill: var(--sun); font: 400 17px var(--font-display); paint-order: stroke; stroke: var(--ink); stroke-width: 5px; }
+  @keyframes pulse { from { scale: 1; opacity: 0.8; } to { scale: 3.2; opacity: 0; } }
+  @media (prefers-reduced-motion: no-preference) { .base .base-pulse { animation: pulse 2.4s ease-out 4; } }
+  figcaption { padding: 0.8rem 1.25rem 1rem; font-size: 0.85rem; color: #b5c9df; border-top: 1px solid rgb(255 255 255 / 0.1); }
+</style>

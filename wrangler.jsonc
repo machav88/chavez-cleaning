@@ -1,0 +1,11 @@
+// Cloudflare Workers (static assets). Deploy: npm run build && npx wrangler deploy
+// Production build must run with SITE_INDEXABLE=true (see README).
+{
+  "name": "chavez-house-cleaning",
+  "compatibility_date": "2026-11-01",
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "404-page",
+    "html_handling": "force-trailing-slash"
+  }
+}

@@ -1,0 +1,82 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import ContactChannels from '@/components/ContactChannels.astro';
+import FastQuoted from '@/components/FastQuoted.astro';
+import TrustBadges from '@/components/TrustBadges.astro';
+import Icon from '@/components/Icon.astro';
+import Photo from '@/components/Photo.astro';
+import { SITE } from '@/config/site';
+
+const title = 'Contact Chavez House Cleaning | Free Quote in Dallas, TX';
+const description =
+  'Get a free house or office cleaning quote in Dallas: call or text (972) 330-0164 or email us. Serving Uptown, East Dallas, Swiss Avenue and the Park Cities.';
+---
+<BaseLayout title={title} description={description} path="/contact/" pageType="ContactPage" breadcrumbs={[{ name: 'Contact', href: '/contact/' }]}>
+  <section class="contact section--deep fx-section on-dark grain">
+    <div class="media-bg" style="--veil: linear-gradient(180deg, rgb(15 42 74 / 0.78), rgb(15 42 74 / 0.9))">
+      <Photo slug="kitchen-navy-range" alt="" sizes="100vw" widths={[960, 1600]} quality={45} />
+    </div>
+    <div class="wrap grid">
+      <div class="side">
+        <p class="eyebrow"><Icon name="mark" /> Contact</p>
+        <h1>Get a free <em>cleaning quote</em></h1>
+        <p class="lead">Call, text or email us with a few details about your home or office and the cleaning you need. We reply with a free quote.</p>
+
+
+        <ContactChannels id="quote" />
+        <TrustBadges class="c-trust" />
+      </div>
+
+      <div class="form-lift">
+        <div class="fq-card" id="instant-quote">
+          <h2 class="fq-h">Get your instant quote</h2>
+          <FastQuoted eager />
+        </div>
+        <div class="info">
+          <h2>What helps us prepare your quote</h2>
+          <ul class="ticks ticks--dark">
+            <li>Your neighborhood, bedrooms and bathrooms, and approximate square footage</li>
+            <li>For offices: square footage, restrooms and your business hours</li>
+            <li>Type of cleaning and how often you would like it</li>
+            <li>Pets, parking, stairs or access instructions</li>
+            <li>Add-ons such as inside the fridge or oven</li>
+          </ul>
+        </div>
+
+        <p class="area-note">
+          <Icon name="pin" size={18} /><span>Mobile team based in East Dallas (75223), serving <a href="/service-areas/dallas/">Uptown &amp; East Dallas</a>,
+          <a href="/service-areas/park-cities/">the Park Cities</a> and <a href="/service-areas/">nearby areas</a>. {SITE.listings.google && <a href={SITE.listings.google} rel="noopener" target="_blank">See us on Google Maps<span class="visually-hidden"> (opens in a new tab)</span></a>}</span>
+        </p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .contact { padding-block: clamp(3rem, 2rem + 4vw, 6rem); }
+  .grid { display: grid; gap: 3rem; align-items: start; }
+  .grid > * { min-width: 0; }
+  @media (min-width: 960px) { .grid { grid-template-columns: minmax(0, 1fr) minmax(440px, 540px); align-items: start; gap: 3.5rem; }  }
+  h1 { color: #fff; font-size: clamp(2.4rem, 1.6rem + 3.4vw, 4.4rem); line-height: 1.02; letter-spacing: -0.035em; }
+  .lead { color: #dce8f5; margin-bottom: 1.75rem; }
+  .channels { list-style: none; padding: 0; margin: 1.5rem 0 2rem; display: grid; gap: 0.75rem; }
+  .channels a {
+    display: flex; align-items: center; gap: 1rem; padding: 0.9rem 1rem; color: #fff; text-decoration: none;
+    background: rgb(255 255 255 / 0.06); border: 1px solid rgb(255 255 255 / 0.18); border-radius: 16px;
+    transition: border-color 0.2s ease, background-color 0.2s ease, transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .channels a:hover { border-color: var(--mint); background: rgb(255 255 255 / 0.1); transform: translateY(-2px); }
+  .channels a > span:last-child { min-width: 0; }
+  .channels strong { display: block; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.06em; color: #b5c9df; }
+  .ic { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 12px; background: rgb(75 176 251 / 0.16); color: var(--mint); flex: none; }
+  .break { word-break: break-all; }
+  .info h2 { font-size: var(--step-1); color: #fff; }
+  .area-note { display: flex; gap: 0.5rem; align-items: flex-start; margin-top: 1.5rem; color: #c4d4e6; font-size: 0.95rem; }
+  .area-note :global(svg) { flex: none; margin-top: 0.2rem; color: var(--mint); }
+  .form-lift { min-width: 0; }
+  .fq-card { margin-bottom: 2rem; }
+  .fq-h { color: #fff; font-size: 1.4rem; margin: 0 0 0.6rem; }
+  @media (min-width: 960px) { .grid { align-items: start !important; } }
+  :global(.c-trust) { margin-top: 1.25rem; }
+  .form-lift :global(.quote-form) { box-shadow: 0 40px 80px -40px rgb(0 0 0 / 0.75); border: 0; }
+</style>

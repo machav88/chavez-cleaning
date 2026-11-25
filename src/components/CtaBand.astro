@@ -1,0 +1,55 @@
+---
+/**
+ * Closing call to action on inner pages: a warm "postcard" with a real job
+ * photo in an arch, the brand arcs and a handwritten sign-off.
+ */
+import Icon from './Icon.astro';
+import Swoosh from './Swoosh.astro';
+import TrustBadges from './TrustBadges.astro';
+import Photo from './Photo.astro';
+import FastQuoted from './FastQuoted.astro';
+import { SITE } from '@/config/site';
+import { useStrings } from '@/i18n';
+import type { PhotoSlug } from '@/data/photos';
+interface Props { heading: string; text: string; service?: string; photo?: PhotoSlug }
+const { heading, text, photo = 'kitchen-quartz-counter' } = Astro.props;
+const t = useStrings();
+---
+<section class="section cta-band" aria-labelledby="cta-h">
+  <div class="wrap">
+    <div class="card-x">
+      <div class="cx-photo">
+        <Photo slug={photo} alt="" sizes="(min-width: 900px) 300px, 60vw" widths={[300, 600]} aspect="4 / 5" />
+      </div>
+      <div class="cx-copy">
+        <Swoosh width={70} />
+        <h2 id="cta-h">{heading}</h2>
+        <p>{text}</p>
+        <div class="btn-row">
+          <a class="btn btn--mint" href={SITE.phone.href} data-track="call_click"><Icon name="phone" />{t.cta.call} {SITE.phone.display}</a>
+          <a class="btn btn--ghost" href={SITE.phone.sms} data-track="sms_click"><Icon name="message" />{t.cta.text}</a>
+        </div>
+        <p class="hand">— Maria &amp; the Chavez team</p>
+        <TrustBadges tone="light" class="cta-trust" />
+      </div>
+    </div>
+    <div class="cta-quote" id="instant-quote">
+      <h3 class="cq-h">Get your instant quote</h3>
+      <FastQuoted />
+    </div>
+  </div>
+</section>
+<style>
+  .cta-band { background: linear-gradient(180deg, var(--paper), var(--paper-2)); }
+  .card-x { display: grid; gap: 2rem; align-items: center; padding: clamp(1.5rem, 1rem + 3vw, 3rem); border-radius: 40px; background: var(--white); border: 1px solid var(--line); background-image: radial-gradient(circle at 100% 0%, rgb(255 181 71 / 0.2), transparent 40%); box-shadow: 0 50px 90px -60px rgb(15 42 74 / 0.55); }
+  @media (min-width: 900px) { .card-x { grid-template-columns: 300px 1fr; gap: 3.5rem; } }
+  .cx-photo { max-width: 300px; width: 70%; justify-self: center; rotate: -3deg; }
+  @media (min-width: 900px) { .cx-photo { width: 100%; } }
+  .cx-photo :global(.photo) { border-radius: 200px 200px 24px 24px; box-shadow: 0 30px 50px -30px rgb(15 42 74 / 0.6); }
+  h2 { font-size: clamp(2rem, 1.4rem + 2.6vw, 3.3rem); line-height: 1.05; margin-bottom: 0.8rem; max-width: 20ch; }
+  p { max-width: 52ch; font-size: var(--step-1); }
+  .hand { font-size: 1.6rem; margin: 1.25rem 0 0.25rem; }
+  .cx-copy :global(.cta-trust) { margin-top: 0.75rem; }
+  .cta-quote { margin-top: 2.5rem; max-width: 760px; margin-inline: auto; }
+  .cq-h { font-size: 1.4rem; margin: 0 0 0.6rem; text-align: center; }
+</style>

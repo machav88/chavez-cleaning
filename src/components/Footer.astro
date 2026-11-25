@@ -1,0 +1,85 @@
+---
+import Icon from './Icon.astro';
+import { SITE } from '@/config/site';
+import { services, serviceUrl } from '@/data/services';
+import { useStrings } from '@/i18n';
+
+const t = useStrings();
+const year = new Date().getFullYear();
+---
+<footer class="site-footer">
+  <div class="wrap top">
+    <div class="about">
+      <p class="name">{SITE.name}</p>
+      <p>{t.footer.tagline}</p>
+      <p class="small">{t.footer.areasNote}</p>
+      <ul class="social" aria-label="Social media">
+        <li><a href={SITE.social.instagram} rel="noopener" target="_blank"><Icon name="instagram" label="Instagram (opens in a new tab)" /></a></li>
+        <li><a href={SITE.social.facebook} rel="noopener" target="_blank"><Icon name="facebook" label="Facebook (opens in a new tab)" /></a></li>
+      </ul>
+    </div>
+    <nav aria-label={t.footer.services}>
+      <p class="h">{t.footer.services}</p>
+      <ul>
+        {services.map((s) => <li><a href={serviceUrl(s.slug)}>{s.name}</a></li>)}
+      </ul>
+    </nav>
+    <nav aria-label={t.footer.company}>
+      <p class="h">{t.footer.company}</p>
+      <ul>
+        <li><a href="/service-areas/">Service Areas</a></li>
+        <li><a href="/service-areas/dallas/">Uptown &amp; East Dallas</a></li>
+        <li><a href="/service-areas/park-cities/">Highland Park &amp; University Park</a></li>
+        <li><a href="/about/">About</a></li>
+        <li><a href="/resources/">Resources</a></li>
+        <li><a href="/contact/">Contact</a></li>
+      </ul>
+    </nav>
+    <div>
+      <p class="h">{t.footer.contact}</p>
+      <ul class="contact">
+        <li><a href={SITE.phone.href} data-track="call_click"><Icon name="phone" size={18} />{SITE.phone.display}</a></li>
+        <li><a href={SITE.phone.sms} data-track="sms_click"><Icon name="message" size={18} />{t.cta.text}</a></li>
+        <li><a href={`mailto:${SITE.email}`} data-track="email_click"><Icon name="mail" size={18} /><span class="email">{SITE.email}</span></a></li>
+        {SITE.listings.google && <li><a href={SITE.listings.google} rel="noopener" target="_blank"><Icon name="pin" size={18} />Find us on Google Maps<span class="visually-hidden"> (opens in a new tab)</span></a></li>}
+      </ul>
+    </div>
+  </div>
+  <div class="wrap bottom">
+    <p>© {year} {SITE.legalName} · Dallas, TX 75223. {t.footer.rights}</p>
+    <a href="/privacy-policy/">{t.footer.privacy}</a>
+    <p class="credit">Designed &amp; developed by <a href="https://heliceds.com/" rel="noopener" target="_blank">Helice DS LLC<span class="visually-hidden"> (opens in a new tab)</span></a></p>
+  </div>
+</footer>
+
+<style>
+  .site-footer { background: var(--ink); color: #c4d4e6; font-size: 0.97rem; }
+  .site-footer a:not(.btn) { color: #fff; text-decoration: none; }
+  .site-footer a:not(.btn):hover { color: var(--mint); text-decoration: underline; }
+  .top {
+    display: grid; gap: 2.25rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr));
+    padding-block: 3.5rem 2.5rem;
+  }
+  .name { font-family: var(--font-display); font-size: 1.15rem; font-weight: 400; color: #fff; margin-bottom: 0.5rem; }
+  .small { font-size: 0.88rem; color: #a8bdd4; }
+  .h { font-weight: 700; color: #fff; letter-spacing: 0.06em; text-transform: uppercase; font-size: 0.8rem; margin-bottom: 0.9rem; }
+  ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.15rem; }
+  nav a, .contact a { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.35rem 0; min-height: 32px; }
+  .contact { margin-bottom: 1.25rem; }
+  .email { word-break: break-all; }
+  .social { display: flex; gap: 0.5rem; margin-top: 1rem; }
+  .social a {
+    display: grid; place-items: center; width: 44px; height: 44px;
+    border: 1px solid rgb(255 255 255 / 0.25); border-radius: 12px;
+  }
+  .social a:hover { border-color: var(--mint); }
+  .bottom {
+    display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.75rem;
+    border-top: 1px solid rgb(255 255 255 / 0.14);
+    padding-block: 1.25rem 1.75rem; font-size: 0.88rem; color: #a8bdd4;
+  }
+  .bottom p { margin: 0; }
+  .credit { width: 100%; font-size: 0.82rem; }
+  @media (min-width: 900px) { .credit { width: auto; } }
+</style>

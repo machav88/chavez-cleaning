@@ -1,0 +1,40 @@
+---
+/**
+ * Related services as "ticket" rows (round photo, name, summary, arrow) in a
+ * two-column list.
+ */
+import Photo from './Photo.astro';
+import Icon from './Icon.astro';
+import { services, serviceUrl } from '@/data/services';
+interface Props { only?: string[]; headingLevel?: 'h2' | 'h3' }
+const { only, headingLevel = 'h3' } = Astro.props;
+const list = only ? services.filter((s) => only.includes(s.slug)) : services;
+const H = headingLevel;
+---
+<ul class="tickets" role="list">
+  {list.map((s) => (
+    <li class="ticket" data-reveal>
+      <Photo slug={s.photo} alt="" sizes="96px" widths={[96, 192]} aspect="1 / 1" class="t-photo" position={s.photoPosition ?? '50% 50%'} />
+      <div class="t-body">
+        <H class="t-h"><a href={serviceUrl(s.slug)}>{s.name}</a></H>
+        <p>{s.cardSummary}</p>
+      </div>
+      <span class="t-go" aria-hidden="true"><Icon name="arrow" size={20} /></span>
+    </li>
+  ))}
+</ul>
+<style>
+  .tickets { list-style: none; margin: 0; padding: 0; display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); }
+  .ticket { position: relative; display: grid; grid-template-columns: auto 1fr auto; gap: 1.1rem; align-items: center; padding: 1rem 1.2rem 1rem 1rem; background: var(--white); border: 1px solid var(--line); border-radius: 999px 28px 28px 999px; transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.3s ease, box-shadow 0.3s ease; }
+  .ticket:hover { transform: translateX(4px); border-color: var(--blue); box-shadow: 0 20px 40px -28px rgb(15 42 74 / 0.5); }
+  .ticket :global(.t-photo) { width: 88px; border-radius: 50%; }
+  .t-h { font-size: var(--step-1); margin: 0 0 0.2rem; }
+  .t-h a { text-decoration: none; color: var(--ink); }
+  .t-h a::after { content: ''; position: absolute; inset: 0; z-index: 2; border-radius: inherit; }
+  .t-h a:focus-visible { outline: none; }
+  .ticket:has(a:focus-visible) { outline: 3px solid var(--focus); outline-offset: 3px; }
+  .t-body p { margin: 0; color: var(--muted); font-size: 0.93rem; }
+  .t-go { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 50%; background: var(--sun); color: var(--ink); transition: rotate 0.3s ease; }
+  .ticket:hover .t-go { rotate: -35deg; }
+  @media (prefers-reduced-motion: reduce) { .ticket, .t-go { transition: none; } .ticket:hover { transform: none; } }
+</style>

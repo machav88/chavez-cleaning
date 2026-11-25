@@ -1,0 +1,189 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { getImage } from 'astro:assets';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Photo from '@/components/Photo.astro';
+import Icon from '@/components/Icon.astro';
+import Faq from '@/components/Faq.astro';
+import CtaBand from '@/components/CtaBand.astro';
+import ServiceCards from '@/components/ServiceCards.astro';
+import PageHero from '@/components/PageHero.astro';
+import Backdrop from '@/components/fx/Backdrop.astro';
+import { services, serviceUrl, type Service } from '@/data/services';
+import { photos } from '@/data/photos';
+import { abs, serviceNode } from '@/lib/schema';
+import { localForService, localUrl, cityBySlug } from '@/data/local';
+
+export const getStaticPaths = (() => services.map((s) => ({ params: { slug: s.slug }, props: { service: s } }))) satisfies GetStaticPaths;
+
+const { service: s } = Astro.props as { service: Service };
+const url = abs(serviceUrl(s.slug));
+const og = await getImage({ src: photos[s.photo], width: 1200, height: 630, fit: 'cover', format: 'jpg' });
+const schema = [serviceNode({ name: s.name, description: s.answer, url, image: abs(og.src), areaServed: 'Dallas, TX' })];
+const local = localForService(s.slug);
+// Free-license Pexels clips shown inside the hero arch (decorative; photo remains the LCP).
+const clips: Record<string, string> = { 'house-cleaning': 'clip-table', 'deep-cleaning': 'clip-kitchen', 'recurring-cleaning': 'clip-floor', 'office-cleaning': 'office-window', 'move-in-move-out-cleaning': 'clip-floor' };
+const hasExtras = Boolean(s.extras || s.secondaryPhoto);
+let n = 0;
+const ch = () => String(++n).padStart(2, '0');
+---
+<BaseLayout
+  title={s.seo.title}
+  description={s.seo.description}
+  path={serviceUrl(s.slug)}
+  ogImage={og.src}
+  breadcrumbs={[{ name: 'Services', href: '/services/' }, { name: s.name, href: serviceUrl(s.slug) }]}
+  schema={schema}
+>
+  <PageHero eyebrow={s.eyebrow} title={s.h1} lead={s.lead} photo={s.photo} photoAlt={s.photoAlt} service={s.slug} clip={clips[s.slug]} position={s.photoPosition ?? "50% 55%"} />
+
+  <!-- Direct answer (AEO/GEO): self-contained, citable -->
+  <section class="answer-band" aria-label="Summary">
+    <div class="wrap"><p class="answer-box"><Icon name="mark" size={20} /><span>{s.answer}</span></p></div>
+  </section>
+
+  <!-- Overview -->
+  <section class="section section--white fx-section grain" aria-labelledby="intro-h">
+    <Backdrop variant="bars" flip />
+    <div class="wrap intro-grid">
+      <div class="prose">
+        <p class="chapter-tag"><span class="n">{ch()}</span>Overview</p>
+        <h2 id="intro-h" class="fx-title big-h">{s.intro.heading}</h2>
+        {s.intro.paragraphs.map((p) => <p>{p}</p>)}
+      </div>
+      <div class="good-wrap">
+        <h2 class="small-h">Who it is for</h2>
+        <ul class="good-for">
+          {s.goodFor.map((g, i) => (
+            <li data-reveal><span class="gf-n" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span><span><strong>{g.title}</strong><span class="gf-t">{g.text}</span></span></li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Checklist -->
+  <section class="section fx-section grain" aria-labelledby="list-h">
+    <Backdrop variant="mesh" />
+    <div class="wrap">
+      <div class="head-split">
+        <div>
+          <p class="chapter-tag"><span class="n">{ch()}</span>Checklist</p>
+          <h2 id="list-h" class="fx-title big-h">{s.checklistHeading}</h2>
+        </div>
+        {s.checklistNote && <p class="head-aside">{s.checklistNote}</p>}
+      </div>
+      <div class="checklist">
+        {s.checklist.map((g, i) => (
+          <div class="card cl-card" data-reveal>
+            <p class="cl-n" aria-hidden="true">{String(i + 1).padStart(2, '0')}</p>
+            <h3>{g.area}</h3>
+            <ul class="ticks">{g.items.map((it) => <li>{it}</li>)}</ul>
+          </div>
+        ))}
+      </div>
+      {s.status === 'validate' && (
+        <p class="note scope-note"><Icon name="info" size={18} /> The exact scope is confirmed with you when we prepare your quote.</p>
+      )}
+    </div>
+  </section>
+
+  {hasExtras && (
+    <section class="section section--deep fx-section on-dark grain" aria-labelledby="extras-h">
+      <Backdrop variant="bars" tone="dark" />
+      <div class="wrap extras-grid">
+        {s.secondaryPhoto && (
+          <div class="depth depth--plate extras-media">
+            <div class="depth-card" data-tilt="7">
+              <Photo slug={s.secondaryPhoto.slug} alt={s.secondaryPhoto.alt} sizes="(min-width: 900px) 400px, 80vw" widths={[400, 640, 800]} aspect="4 / 5" class="photo-in" />
+            </div>
+          </div>
+        )}
+        {s.extras ? (
+          <div data-reveal>
+            <p class="chapter-tag"><span class="n">{ch()}</span>Add-ons</p>
+            <h2 id="extras-h" class="fx-title big-h">{s.extras.heading}</h2>
+            <p class="extras-text">{s.extras.text}</p>
+            <ul class="pills">{s.extras.items.map((it) => <li>{it}</li>)}</ul>
+          </div>
+        ) : (
+          <div data-reveal>
+            <p class="chapter-tag"><span class="n">{ch()}</span>Plan ahead</p>
+            <h2 id="extras-h" class="fx-title big-h">Make the day go smoothly</h2>
+            <ul class="ticks ticks--dark">
+              <li>Share the date, the size of the space and anything that needs special attention.</li>
+              <li>Make sure water and electricity are on and that we can access every room.</li>
+              <li>Let us know about parking, gate codes, keys or alarm systems in advance.</li>
+            </ul>
+            <a class="btn btn--ghost" href="/resources/how-to-prepare-for-a-house-cleaning/">Read our preparation guide<Icon name="arrow" /></a>
+          </div>
+        )}
+      </div>
+    </section>
+  )}
+
+  <Faq items={s.faqs} heading={`${s.name}: common questions`} class="section--white fx-section grain" chapter={ch()}>
+    <Backdrop slot="backdrop" variant="mesh" flip />
+  </Faq>
+
+  <section class="section fx-section grain" aria-labelledby="related-h">
+    <Backdrop variant="map" />
+    <div class="wrap">
+      <div class="head-split">
+        <div>
+          <p class="chapter-tag"><span class="n">{ch()}</span>Related services</p>
+          <h2 id="related-h" class="fx-title big-h">You might also need</h2>
+        </div>
+        <p class="head-aside">
+          {local.length > 0 ? <>{s.name} near you: {local.map((x, i) => <>{i > 0 && ', '}<a href={localUrl(x.service, x.city)}>{cityBySlug(x.city).name}</a></>)}. </> : null}
+          Serving <a href="/service-areas/dallas/">Uptown &amp; East Dallas</a>, <a href="/service-areas/park-cities/">the Park Cities</a> and
+          <a href="/service-areas/">nearby areas</a>.
+        </p>
+      </div>
+      <ServiceCards only={s.related} />
+    </div>
+  </section>
+
+  <CtaBand heading={s.cta.heading} text={s.cta.text} service={s.slug} />
+</BaseLayout>
+
+<style>
+  .answer-band { background: var(--white); padding-top: clamp(1.5rem, 1rem + 2vw, 2.5rem); }
+  .answer-box { display: flex; gap: 0.85rem; align-items: flex-start; margin: 0; padding: 1.2rem 1.4rem; border-radius: 20px; background: var(--mint-wash); border-left: 4px solid var(--blue); color: var(--ink); font-size: var(--step-1); line-height: 1.55; max-width: 980px; }
+  .answer-box :global(svg) { flex: none; color: var(--mint-ink); margin-top: 0.3rem; }
+  .big-h { font-size: clamp(2rem, 1.4rem + 2.4vw, 3.2rem); letter-spacing: -0.03em; }
+  .intro-grid { display: grid; gap: 3rem; }
+  @media (min-width: 900px) { .intro-grid { grid-template-columns: 1.2fr 0.8fr; gap: 5rem; align-items: start; } .good-wrap { position: sticky; top: calc(var(--header-h) + 2rem); } }
+  .intro-grid .prose h2 { margin-top: 0; }
+  .small-h { font-size: var(--step-1); }
+  .good-for { list-style: none; margin: 0; padding: 0; display: grid; }
+  .good-for li { display: grid; grid-template-columns: auto 1fr; gap: 1rem; padding: 1.1rem 0; border-top: 1px solid var(--line); }
+  .good-for li:last-child { border-bottom: 1px solid var(--line); }
+  .gf-n { font: 400 1.6rem/1 var(--font-display); color: transparent; -webkit-text-stroke: 1.2px var(--ink); min-width: 2.2rem; }
+  .good-for strong { display: block; color: var(--ink); }
+  .gf-t { color: var(--muted); font-size: 0.97rem; }
+
+  .head-split { display: grid; gap: 1rem 4rem; align-items: end; margin-bottom: clamp(2rem, 1.5rem + 2vw, 3rem); }
+  @media (min-width: 960px) { .head-split { grid-template-columns: 1.2fr 0.8fr; } }
+  .head-split h2 { margin-bottom: 0; }
+  .head-aside { color: var(--muted); margin: 0; }
+
+  .checklist { columns: 2 340px; column-gap: 1.25rem; }
+  .checklist > .cl-card { break-inside: avoid; margin-bottom: 1.25rem; display: block; }
+  .checklist > .cl-card:first-child { background: var(--ink); border-color: transparent; color: #d6e4f3; }
+  .checklist > .cl-card:first-child h3 { color: #fff; }
+  .checklist > .cl-card:first-child :global(li) { color: #d6e4f3; }
+  .checklist > .cl-card:first-child .cl-n { -webkit-text-stroke-color: rgb(255 255 255 / 0.35); }
+  .cl-card { position: relative; border-radius: var(--radius-lg); transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease, border-color 0.3s ease; }
+  .cl-card:hover { transform: translateY(-4px); box-shadow: 0 22px 40px -24px rgb(15 42 74 / 0.4); border-color: #c9c1b0; }
+  .cl-n { position: absolute; top: 1.1rem; right: 1.3rem; margin: 0; font: 400 2.2rem/1 var(--font-display); color: transparent; -webkit-text-stroke: 1.2px rgb(15 42 74 / 0.25); }
+  .checklist h3 { font-size: var(--step-1); padding-bottom: 0.6rem; border-bottom: 1px solid var(--line); margin-bottom: 1rem; padding-right: 3rem; }
+  .scope-note { display: flex; gap: 0.5rem; align-items: center; margin-top: 1.5rem; }
+
+  .extras-grid { display: grid; gap: 3rem; align-items: center; }
+  @media (min-width: 900px) { .extras-grid { grid-template-columns: 0.8fr 1.2fr; gap: 5rem; } }
+  .extras-media { max-width: 400px; width: calc(100% - 14px); justify-self: center; }
+  .extras-text { color: #d6e4f3; }
+  .pills { list-style: none; padding: 0; margin: 1.5rem 0 0; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .pills li { padding: 0.5rem 1rem; border-radius: 999px; background: rgb(255 255 255 / 0.06); border: 1px solid rgb(255 255 255 / 0.22); color: #fff; font-weight: 550; font-size: 0.95rem; }
+</style>

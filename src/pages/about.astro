@@ -1,0 +1,141 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Photo from '@/components/Photo.astro';
+import Icon from '@/components/Icon.astro';
+import CtaBand from '@/components/CtaBand.astro';
+import PageHero from '@/components/PageHero.astro';
+import Backdrop from '@/components/fx/Backdrop.astro';
+import GoogleReviews from '@/components/GoogleReviews.astro';
+import { SITE } from '@/config/site';
+
+const title = 'About Chavez House Cleaning | Maria Chavez, Dallas TX';
+const description =
+  'Meet Maria Chavez and Chavez House Cleaning, a locally owned cleaning company in East Dallas with 10+ years of experience. How we work and how to reach us.';
+
+const values = [
+  { icon: 'clipboard', title: 'Clear checklists', text: 'Every service has a written checklist, so you know what is included before we arrive and nothing depends on memory.' },
+  { icon: 'chat', title: 'Straight answers', text: 'Estimates are based on your actual home. If something changes, we talk with you before the price does.' },
+  { icon: 'home', title: 'Respect for your home', text: 'Keys, door codes and alarm instructions are handled carefully, and your information is used only to provide the service.' },
+  { icon: 'paw', title: 'Homes and offices', text: 'The same care for a family home in Lakewood and an office in Uptown, with a checklist for each.' },
+  { icon: 'shield', title: 'Safe products, safe team', text: 'Tell us about allergies or product sensitivities. On hot Texas days we also ask you to leave the A/C on: cleaning is physical work.' },
+  { icon: 'calendar', title: 'Flexible scheduling', text: 'Weekly, biweekly, every 4 weeks or one time, with rescheduling when life gets in the way.' },
+] as const;
+---
+<BaseLayout title={title} description={description} path="/about/" pageType="AboutPage" breadcrumbs={[{ name: 'About', href: '/about/' }]}>
+  <PageHero
+    eyebrow="About us"
+    title="A Dallas cleaning company that treats your home like its own"
+    lead={`${SITE.legalName} is a locally owned cleaning company in East Dallas, run by ${SITE.contactPerson}. We clean homes, apartments and offices in Uptown, East Dallas and the Park Cities.`}
+    photo="sunroom-sofa-rug"
+    photoAlt="Sunroom with tall windows and a velvet sofa after a Chavez House Cleaning visit"
+    position="50% 60%"
+  />
+
+  <section class="section section--white fx-section grain" aria-labelledby="story-h">
+    <Backdrop variant="bars" flip />
+    <div class="wrap two">
+      <div class="prose">
+        <p class="chapter-tag"><span class="n">01</span>Our story</p>
+        <h2 id="story-h" class="fx-title big-h">From 10 years in the trade to <em>her own company</em></h2>
+        <p>
+          Maria Chavez has been cleaning homes in Dallas for more than {SITE.yearsInBusiness} years. After years of working in the
+          trade, she started Chavez House Cleaning to run it her way: <mark class="hl">on time, thorough and easy to talk to</mark>.
+        </p>
+        <p>
+          Today the company cleans houses, apartments, historic homes and offices from Uptown to Swiss Avenue: regular
+          visits on a set schedule, deep cleanings before the holidays, move-out cleanings for renters and landlords,
+          post-construction cleanups and after-hours office cleaning. Each service has its own written checklist.
+        </p>
+        <p>
+          Our clients say it best on Google: “Maria is dependable, professional, and friendly. She always arrives on time and
+          does a great job.” We are based in East Dallas (75223), which keeps Uptown, Lower Greenville and Swiss Avenue a short drive away.
+        </p>
+        <p>
+          When you contact us, you talk to a real person. <strong>{SITE.contactPerson}</strong> is your point of contact
+          for estimates, scheduling and questions, by phone, text or email.
+        </p>
+      </div>
+      <figure class="figure depth depth--plate story-media">
+        <div class="depth-card" data-tilt="6">
+          <Photo slug="maria-sunroom" alt="Chavez House Cleaning team member in a sunroom after finishing a cleaning" sizes="(min-width: 900px) 380px, 80vw" widths={[380, 600, 760]} aspect="4 / 5" class="photo-in" position="30% 50%" />
+        </div>
+      </figure>
+    </div>
+  </section>
+
+  <section class="section section--deep fx-section on-dark grain" aria-labelledby="values-h">
+    <div class="media-bg" style="--veil: rgb(15 42 74 / 0.86)">
+      <Photo slug="living-room-hardwood" alt="" sizes="100vw" widths={[960, 1600]} quality={45} />
+    </div>
+    <div class="wrap">
+      <p class="chapter-tag"><span class="n">02</span>How we work</p>
+      <h2 id="values-h" class="fx-title big-h">What you can expect from us</h2>
+      <ul class="values">
+        {values.map((v) => (
+          <li data-reveal>
+            <span class="v-ic"><Icon name={v.icon} size={24} /></span>
+            <h3>{v.title}</h3>
+            <p>{v.text}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section section--mint fx-section grain" aria-labelledby="pets-h">
+    <Backdrop variant="mesh" />
+    <div class="wrap two reverse">
+      <div class="depth depth--plate pets-media">
+        <div class="depth-card" data-tilt="6">
+          <Photo slug="kitchen-navy-range" alt="Kitchen with navy cabinets and a stainless range after a Chavez cleaning" sizes="(min-width: 900px) 380px, 80vw" widths={[380, 600, 760]} aspect="1 / 1" position="50% 60%" class="photo-in" />
+        </div>
+      </div>
+      <div data-reveal>
+        <p class="chapter-tag"><span class="n">03</span>Our promise</p>
+        <h2 id="pets-h" class="fx-title big-h">Satisfaction is the standard, not an extra</h2>
+        <p>
+          We treat your home like our own home, and we keep our appointments. If something on the checklist was missed,
+          tell us and we will make it right. Pets are welcome too; just tell us about them when you book so they stay
+          safe while doors are open and products are in use.
+        </p>
+        <a class="btn btn--ghost" href="/resources/how-to-prepare-for-a-house-cleaning/">How to prepare for a visit<Icon name="arrow" /></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--white fx-section grain" aria-labelledby="where-h">
+    <Backdrop variant="map" />
+    <div class="wrap narrow">
+      <p class="chapter-tag"><span class="n">04</span>Where we work</p>
+      <h2 id="where-h" class="fx-title big-h">We come to you</h2>
+      <p>
+        We are a mobile team based in East Dallas. Our clients are mostly in <a href="/service-areas/dallas/">Uptown and East Dallas</a>
+        and <a href="/service-areas/park-cities/">Highland Park and University Park</a>. See the <a href="/service-areas/">full list of service areas</a>
+        or browse <a href="/services/">all our cleaning services</a>.
+      </p>
+      <ul class="social-row">
+        <li><a class="btn btn--ghost" href={SITE.social.instagram} rel="noopener" target="_blank"><Icon name="instagram" />Instagram<span class="visually-hidden"> (opens in a new tab)</span></a></li>
+        <li><a class="btn btn--ghost" href={SITE.social.facebook} rel="noopener" target="_blank"><Icon name="facebook" />Facebook<span class="visually-hidden"> (opens in a new tab)</span></a></li>
+      </ul>
+    </div>
+  </section>
+
+  <GoogleReviews heading="Reviews from our clients on" />
+
+  <CtaBand heading="Let’s get your home on the schedule" text="Tell us what you need and we will reply with a free quote." />
+</BaseLayout>
+
+<style>
+  .big-h { font-size: clamp(2rem, 1.4rem + 2.4vw, 3.2rem); letter-spacing: -0.03em; }
+  .two { display: grid; gap: 3rem; align-items: center; }
+  @media (min-width: 900px) { .two { grid-template-columns: 1.2fr 0.8fr; gap: 5rem; } .two.reverse { grid-template-columns: 0.8fr 1.2fr; } }
+  .prose .big-h { margin-top: 0; }
+  .story-media, .pets-media { max-width: 380px; width: calc(100% - 14px); justify-self: center; margin: 0; }
+  .values { list-style: none; margin: clamp(2rem, 1.5rem + 2vw, 3rem) 0 0; padding: 0; display: grid; gap: 0 2.5rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); }
+  .values li { padding: 1.5rem 0; border-top: 1px solid rgb(255 255 255 / 0.16); }
+  .v-ic { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 14px; background: rgb(75 176 251 / 0.16); color: var(--mint); margin-bottom: 1rem; }
+  .values h3 { color: #fff; }
+  .values p { color: #cfdeef; margin: 0; }
+  .narrow { max-width: 760px; }
+  .social-row { list-style: none; padding: 0; margin: 1.75rem 0 0; display: flex; gap: 0.75rem; flex-wrap: wrap; }
+</style>

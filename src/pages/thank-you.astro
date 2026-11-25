@@ -1,0 +1,21 @@
+---
+/** Fallback confirmation page for Netlify Forms (no-JS submissions). Not indexed, not in sitemap. */
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Backdrop from '@/components/fx/Backdrop.astro';
+import Icon from '@/components/Icon.astro';
+import { SITE } from '@/config/site';
+---
+<BaseLayout title="Request received | Chavez House Cleaning" description="Thank you for contacting Chavez House Cleaning. We received your request and will be in touch soon." path="/thank-you/" noindex>
+  <section class="fx-section grain ty">
+    <Backdrop variant="mesh" />
+    <div class="wrap">
+      <p class="eyebrow"><Icon name="check" /> Request received</p>
+      <h1>Thank you — we will be in touch soon</h1>
+      <p class="lead">If your cleaning is urgent, call or text us at <a href={SITE.phone.href}>{SITE.phone.display}</a>.</p>
+      <a class="btn" href="/">Back to the homepage</a>
+    </div>
+  </section>
+</BaseLayout>
+<style>
+  .ty { padding-block: clamp(3rem, 2rem + 4vw, 6rem); }
+</style>

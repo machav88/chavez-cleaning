@@ -1,0 +1,91 @@
+---
+/**
+ * DRAFT privacy policy — must be reviewed by the client and, ideally, legal
+ * counsel before production (see docs/CLIENT-VALIDATION.md). Update
+ * `lastUpdated` and the analytics section once tools are confirmed.
+ */
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Backdrop from '@/components/fx/Backdrop.astro';
+import { SITE } from '@/config/site';
+const lastUpdated = 'November 23, 2026';
+---
+<BaseLayout
+  title="Privacy Policy | Chavez House Cleaning"
+  description="How Chavez House Cleaning LLC collects, uses and protects the information you share through this website, by phone, text or email."
+  path="/privacy-policy/"
+  breadcrumbs={[{ name: 'Privacy Policy', href: '/privacy-policy/' }]}
+>
+  <article class="fx-section grain section--tight">
+    <Backdrop variant="mesh" />
+    <div class="wrap prose">
+      <h1>Privacy Policy</h1>
+      <p class="muted">Last updated: {lastUpdated}</p>
+
+      <p>
+        This policy explains how {SITE.legalName} (“Chavez House Cleaning”, “we”, “us”) handles personal information collected
+        through chavezhousecleaning.com and when you contact us by phone, text message or email.
+      </p>
+
+      <h2>Information we collect</h2>
+      <ul>
+        <li><strong>Information you give us:</strong> your name, phone number, email address, city or neighborhood, details about your home or office, and anything you write in a message.</li>
+        <li><strong>Service information:</strong> scheduling details, access instructions (such as door codes or alarm instructions) and notes about pets, allergies or product preferences, when you choose to share them.</li>
+        <li><strong>Technical information:</strong> like most websites, our hosting provider may log basic technical data such as IP address, browser type and pages visited, for security and reliability.</li>
+      </ul>
+
+      <h2>How we use information</h2>
+      <ul>
+        <li>To reply to your request and prepare a quote.</li>
+        <li>To schedule, provide and follow up on cleaning services.</li>
+        <li>To keep records needed for billing and our normal business operations.</li>
+        <li>To improve our website and services.</li>
+      </ul>
+      <p>We use client information only for the purpose of providing our cleaning services. <strong>We do not sell your personal information.</strong></p>
+
+      <h2>When we share information</h2>
+      <p>
+        We share information only with service providers that help us run the business (for example website hosting,
+        email or form-processing providers), when required by law, or to protect our rights and safety. These providers
+        may only use the information to perform services for us.
+      </p>
+
+      <h2>Cookies and analytics</h2>
+      <p>
+        This website does not use advertising cookies. If we add website analytics in the future, we will update this
+        section to describe the tool used and how you can opt out.
+      </p>
+
+      <h2>How long we keep information</h2>
+      <p>We keep information only as long as needed for the purposes above or as required by law, and then delete or anonymize it.</p>
+
+      <h2>Your choices and privacy rights</h2>
+      <p>
+        You can ask us to access, correct or delete the personal information we hold about you, and you can ask us to stop
+        contacting you at any time. Texas residents may have additional rights under the Texas Data Privacy and Security Act and other applicable laws. To make a
+        request, contact us using the details below. We will not discriminate against you for exercising your rights.
+      </p>
+
+      <h2>Security</h2>
+      <p>We take reasonable steps to protect the information you share, including access instructions such as keys and door codes. No method of transmission or storage is completely secure.</p>
+
+      <h2>Children’s privacy</h2>
+      <p>Our website and services are intended for adults. We do not knowingly collect information from children under 13.</p>
+
+      <h2>Changes to this policy</h2>
+      <p>We may update this policy from time to time. The date at the top shows when it was last changed.</p>
+
+      <h2>Contact us</h2>
+      <p>
+        {SITE.legalName}<br />
+        Phone: <a href={SITE.phone.href}>{SITE.phone.display}</a><br />
+        Email: <a href={`mailto:${SITE.email}`}>{SITE.email}</a><br />
+        Dallas, TX 75223
+      </p>
+    </div>
+  </article>
+</BaseLayout>
+<style>
+  article { padding-bottom: 5rem; }
+  .muted { color: var(--muted); }
+  h1 { font-size: var(--step-3); }
+</style>

@@ -1,0 +1,46 @@
+# 301 redirects from the old WordPress site (chavezhousecleaning.com).
+# Cloudflare (Workers static assets / Pages) applies the first matching rule:
+# specific rules first, splats last. Inventory: ../web vieja/urls-viejas.txt +
+# ../web vieja/paginas-zonas.txt (see docs/REDIRECTS.md).
+
+# Old sitemaps (Yoast / WordPress)
+/sitemap.xml                 /sitemap-index.xml   301
+/sitemap_index.xml           /sitemap-index.xml   301
+/wp-sitemap.xml              /sitemap-index.xml   301
+/page-sitemap.xml            /sitemap-index.xml   301
+/post-sitemap.xml            /sitemap-index.xml   301
+/category-sitemap.xml        /sitemap-index.xml   301
+/author-sitemap.xml          /sitemap-index.xml   301
+/elementor-hf-sitemap.xml    /sitemap-index.xml   301
+
+# Old area pages (/area/<city>-tx/) -> closest new page, never all to home
+/area/dallas-tx/                 /service-areas/dallas/                              301
+/area/uptown-dallas-tx/          /services/house-cleaning/uptown/                    301
+/area/downtown-dallas-tx/        /services/office-cleaning/downtown-dallas/          301
+/area/deep-ellum-tx/             /services/move-in-move-out-cleaning/deep-ellum/     301
+/area/oak-lawn-tx/               /service-areas/dallas/                              301
+/area/katy-trails-tx/            /service-areas/dallas/                              301
+/area/santa-fe-trails-tx/        /service-areas/dallas/                              301
+/area/highland-park-tx/          /services/house-cleaning/highland-park/             301
+/area/university-park-tx/        /service-areas/park-cities/                         301
+/area/*                          /service-areas/                                     301
+/KvZaKCaLoCvRiaU/area/dallas-tx/             /service-areas/dallas/                  301
+/KvZaKCaLoCvRiaU/area/uptown-dallas-tx/      /services/house-cleaning/uptown/        301
+/KvZaKCaLoCvRiaU/area/downtown-dallas-tx/    /services/office-cleaning/downtown-dallas/  301
+/KvZaKCaLoCvRiaU/area/deep-ellum-tx/         /services/move-in-move-out-cleaning/deep-ellum/  301
+/KvZaKCaLoCvRiaU/area/highland-park-tx/      /services/house-cleaning/highland-park/  301
+/KvZaKCaLoCvRiaU/area/university-park-tx/    /service-areas/park-cities/             301
+/KvZaKCaLoCvRiaU/area/*                      /service-areas/                         301
+/KvZaKCaLoCvRiaU/*                           /                                       301
+
+# Other WordPress pages
+/terms-conditions/*          /privacy-policy/     301
+/join-the-team/*             /about/              301
+/city/*                      /service-areas/      301
+/home-2/*                    /                    301
+/welcome-to-cloudways/*      /                    301
+/elementor-hf/*              /                    301
+/author/*                    /about/              301
+/category/*                  /resources/          301
+/feed/*                      /                    301
+/comments/feed/*             /                    301

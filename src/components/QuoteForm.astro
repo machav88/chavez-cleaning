@@ -1,0 +1,198 @@
+---
+/**
+ * Quote request form. Transport is chosen at build time (PUBLIC_FORM_MODE):
+ *  - demo (default): validates in the browser, sends nothing, says so clearly.
+ *  - endpoint: JSON POST to PUBLIC_FORM_ENDPOINT.
+ * Handling lives in src/scripts/form.ts.
+ */
+import Icon from './Icon.astro';
+import { SITE, ENV } from '@/config/site';
+import { services } from '@/data/services';
+import { useStrings } from '@/i18n';
+
+interface Props { id?: string; heading?: string; headingLevel?: 'h2' | 'h3'; intro?: string }
+const { id = 'quote', heading, headingLevel = 'h2', intro } = Astro.props;
+const t = useStrings();
+const f = t.form;
+const H = headingLevel;
+const mode = ENV.formMode;
+const fid = (name: string) => `${id}-${name}`;
+---
+<div class="quote-form card" id={id}>
+  <H class="title">{heading ?? f.heading}</H>
+  {intro && <p class="intro">{intro}</p>}
+  <p class="req-note"><span aria-hidden="true">*</span> = {f.required}</p>
+
+  <form
+    novalidate
+    data-quote-form
+    data-mode={mode}
+    data-endpoint={mode === 'endpoint' ? ENV.formEndpoint : undefined}
+    name="quote"
+    method="post"
+  >
+    <div class="errors" role="alert" tabindex="-1" hidden>
+      <p><strong>{f.errorsTitle}</strong></p>
+      <ul></ul>
+    </div>
+
+    <p class="hp" aria-hidden="true">
+      <label>Company <input name="company" tabindex="-1" autocomplete="off" /></label>
+    </p>
+
+    <div class="row two">
+      <div class="field">
+        <label for={fid('name')}>{f.name} <span class="req" aria-hidden="true">*</span></label>
+        <input id={fid('name')} name="name" type="text" autocomplete="name" required aria-describedby={fid('name-err')} />
+        <p class="err" id={fid('name-err')}></p>
+      </div>
+      <div class="field">
+        <label for={fid('phone')}>{f.phone} <span class="req" aria-hidden="true">*</span></label>
+        <input id={fid('phone')} name="phone" type="tel" inputmode="tel" autocomplete="tel" required data-validate="phone" aria-describedby={fid('phone-err')} />
+        <p class="err" id={fid('phone-err')}></p>
+      </div>
+    </div>
+
+    <div class="row two">
+      <div class="field">
+        <label for={fid('email')}>{f.email}</label>
+        <input id={fid('email')} name="email" type="email" autocomplete="email" data-validate="email" aria-describedby={fid('email-err')} />
+        <p class="err" id={fid('email-err')}></p>
+      </div>
+      <div class="field">
+        <label for={fid('city')}>{f.city} <span class="req" aria-hidden="true">*</span></label>
+        <input id={fid('city')} name="city" type="text" autocomplete="address-level2" required aria-describedby={fid('city-err')} />
+        <p class="err" id={fid('city-err')}></p>
+      </div>
+    </div>
+
+    <div class="row two">
+      <div class="field">
+        <label for={fid('service')}>{f.service} <span class="req" aria-hidden="true">*</span></label>
+        <select id={fid('service')} name="service" required aria-describedby={fid('service-err')}>
+          <option value="">{f.servicePlaceholder}</option>
+          {services.map((s) => <option value={s.slug}>{s.name}</option>)}
+          <option value="not-sure">{f.notSure}</option>
+        </select>
+        <p class="err" id={fid('service-err')}></p>
+      </div>
+      <div class="field">
+        <label for={fid('size')}>{f.size}</label>
+        <input id={fid('size')} name="size" type="text" aria-describedby={fid('size-hint')} />
+        <p class="hint" id={fid('size-hint')}>{f.sizeHint}</p>
+      </div>
+    </div>
+
+    <fieldset class="field">
+      <legend>{f.frequency}</legend>
+      <div class="chips">
+        {f.frequencies.map((fr, i) => (
+          <label class="chip"><input type="radio" name="frequency" value={fr} checked={i === 0} /><span>{fr}</span></label>
+        ))}
+      </div>
+    </fieldset>
+
+    <div class="field">
+      <label for={fid('message')}>{f.message}</label>
+      <textarea id={fid('message')} name="message" rows="4" aria-describedby={fid('message-hint')}></textarea>
+      <p class="hint" id={fid('message-hint')}>{f.messageHint}</p>
+    </div>
+
+    <fieldset class="field">
+      <legend>{f.contactPref}</legend>
+      <div class="chips">
+        {f.contactPrefs.map((c, i) => (
+          <label class="chip"><input type="radio" name="contact_preference" value={c} checked={i === 0} /><span>{c}</span></label>
+        ))}
+      </div>
+    </fieldset>
+
+    <div class="field consent">
+      <label class="check">
+        <input type="checkbox" name="consent" value="yes" required data-label="Consent" aria-describedby={fid('consent-err')} />
+        <span>{f.consent} <a href="/privacy-policy/">Privacy Policy</a>. <span class="req" aria-hidden="true">*</span></span>
+      </label>
+      <p class="err" id={fid('consent-err')}></p>
+    </div>
+
+    <button class="btn btn--mint submit" type="submit">
+      <span class="label">{f.submit}</span>
+      <Icon name="arrow" />
+    </button>
+
+    <noscript>
+      <p class="note">This form needs JavaScript. You can also call or text <a href={SITE.phone.href}>{SITE.phone.display}</a> or email <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.</p>
+    </noscript>
+  </form>
+
+  <div class="result" data-result hidden tabindex="-1" role="status">
+    <div data-state="demo" hidden>
+      <p class="r-title"><Icon name="info" /> {f.demoTitle}</p>
+      <p>{f.demoText}</p>
+    </div>
+    <div data-state="success" hidden>
+      <p class="r-title"><Icon name="check" /> {f.successTitle}</p>
+      <p>{f.successText}</p>
+    </div>
+    <div data-state="fail" hidden>
+      <p class="r-title"><Icon name="alert" /> {f.failTitle}</p>
+      <p>{f.failText}</p>
+    </div>
+    <ul class="direct">
+      <li><a class="btn" href={SITE.phone.href}><Icon name="phone" />{SITE.phone.display}</a></li>
+      <li><a class="btn btn--ghost" href={SITE.phone.sms}><Icon name="message" />{t.cta.text}</a></li>
+      <li><a class="btn btn--ghost" href={`mailto:${SITE.email}`}><Icon name="mail" />{t.cta.email}</a></li>
+    </ul>
+  </div>
+</div>
+
+<style>
+  .quote-form { box-shadow: var(--shadow); border-radius: var(--radius-lg); padding: clamp(1.25rem, 0.8rem + 2vw, 2.25rem); }
+  .title { font-size: var(--step-2); margin-bottom: 0.4rem; }
+  .intro { color: var(--muted); }
+  .req-note { font-size: var(--step--1); color: var(--muted); margin-bottom: 1.25rem; }
+  .req { color: var(--danger); }
+  form { display: grid; gap: 1.1rem; }
+  .row { display: grid; gap: 1.1rem; }
+  @media (min-width: 640px) { .row.two { grid-template-columns: 1fr 1fr; } }
+  .field { display: grid; gap: 0.35rem; min-width: 0; border: 0; padding: 0; margin: 0; }
+  label, legend { font-weight: 600; color: var(--ink); font-size: 0.97rem; padding: 0; }
+  input:not([type='radio']):not([type='checkbox']), select, textarea {
+    width: 100%; min-height: 48px;
+    padding: 0.7rem 0.9rem;
+    border: 1.5px solid #b9b2a3; border-radius: 12px;
+    background: var(--white); color: var(--ink);
+    font: inherit;
+  }
+  textarea { resize: vertical; min-height: 110px; }
+  input:not([type='radio']):not([type='checkbox']), select, textarea { transition: border-color 0.18s ease, box-shadow 0.2s ease, background-color 0.18s ease; }
+  input:hover, select:hover, textarea:hover { border-color: var(--ink-soft); }
+  input:not([type='radio']):not([type='checkbox']):focus-visible, select:focus-visible, textarea:focus-visible { box-shadow: 0 0 0 5px rgb(0 102 255 / 0.12); }
+  .chip span { transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease, transform 0.18s ease; }
+  .chip:hover span { border-color: var(--ink); transform: translateY(-1px); }
+  input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px solid var(--focus); outline-offset: 1px; border-color: var(--ink); }
+  [aria-invalid='true'] { border-color: var(--danger) !important; background: var(--danger-wash) !important; }
+  .hint { font-size: 0.86rem; color: var(--muted); margin: 0; }
+  .err { font-size: 0.88rem; color: var(--danger); margin: 0; font-weight: 600; }
+  .err:empty { display: none; }
+  .chips { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.35rem; }
+  .chip { position: relative; font-weight: 500; }
+  .chip input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+  .chip span {
+    display: inline-flex; align-items: center; min-height: 44px; padding: 0.5rem 1rem;
+    border: 1.5px solid #b9b2a3; border-radius: 999px; background: var(--white);
+  }
+  .chip input:checked + span { background: var(--ink); border-color: var(--ink); color: #fff; }
+  .chip input:focus-visible + span { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .check { display: flex; gap: 0.7rem; align-items: flex-start; font-weight: 500; color: var(--ink-soft); }
+  .check input { width: 22px; height: 22px; margin-top: 0.15rem; flex: none; accent-color: var(--ink); }
+  .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+  .submit { justify-self: start; min-width: 220px; }
+  .submit[disabled] { opacity: 0.7; cursor: progress; }
+  .errors { border: 2px solid var(--danger); background: var(--danger-wash); border-radius: 12px; padding: 0.9rem 1.1rem; color: var(--ink); }
+  .errors ul { margin: 0; padding-left: 1.1rem; }
+  .errors a { color: var(--danger); font-weight: 600; }
+  .result { border-radius: 16px; padding: 1.25rem; background: var(--mint-wash); }
+  .result .r-title { display: flex; align-items: center; gap: 0.5rem; font-weight: 700; color: var(--ink); font-size: var(--step-1); }
+  .direct { list-style: none; padding: 0; margin: 1rem 0 0; display: flex; flex-wrap: wrap; gap: 0.6rem; }
+</style>

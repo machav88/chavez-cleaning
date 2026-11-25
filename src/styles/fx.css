@@ -1,0 +1,262 @@
+/* ==========================================================================
+   FX system — depth, scroll story and motion.
+   Rules: every effect is progressive. Without scroll-driven animation
+   support, without JS or with prefers-reduced-motion the page is complete
+   and static. Nothing above the fold is hidden or delayed.
+   ========================================================================== */
+
+/* ---------- Section shell with layered backdrop ---------- */
+.fx-section { position: relative; overflow: clip; isolation: isolate; }
+.fx-section > .wrap { position: relative; z-index: 1; }
+.section--mint { background: var(--mint-wash); }
+.section--deep {
+  background-color: var(--ink);
+  background-image:
+    radial-gradient(circle at 85% 10%, rgb(75 176 251 / 0.18), transparent 40%),
+    radial-gradient(circle at 0% 100%, rgb(31 110 156 / 0.55), transparent 55%);
+  color: #d6e4f3;
+}
+.section--deep h2, .section--deep h3 { color: #fff; }
+.section--deep .eyebrow { color: var(--mint); }
+.section--deep a:not(.btn) { color: #fff; }
+/* Light cards placed on dark sections keep their own ink colors */
+.section--deep .card, .section--deep .quote-form { color: var(--ink-soft); }
+.section--deep .card h3, .section--deep .quote-form h3 { color: var(--ink); }
+.section--deep .card a:not(.btn), .section--deep .quote-form a:not(.btn) { color: var(--ink); }
+
+.backdrop { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+.bd-layer { position: absolute; inset: -12% -4%; }
+.bd-layer svg { position: absolute; display: block; max-width: none; }
+
+/* Mesh: soft pools of brand light, drifting with scroll */
+.bd-mesh .mesh-a {
+  background:
+    radial-gradient(38% 46% at 18% 28%, rgb(75 176 251 / 0.16), transparent 70%),
+    radial-gradient(34% 40% at 86% 70%, rgb(31 110 156 / 0.13), transparent 70%);
+}
+.bd-mesh .mesh-b {
+  background: radial-gradient(26% 30% at 62% 18%, rgb(75 176 251 / 0.10), transparent 70%);
+}
+.backdrop--dark.bd-mesh .mesh-a {
+  background:
+    radial-gradient(38% 46% at 18% 28%, rgb(75 176 251 / 0.18), transparent 70%),
+    radial-gradient(34% 40% at 86% 70%, rgb(31 110 156 / 0.5), transparent 70%);
+}
+
+@keyframes fx-drift-slow { from { transform: translate3d(0, -5%, 0); } to { transform: translate3d(0, 5%, 0); } }
+@keyframes fx-drift-fast { from { transform: translate3d(0, -14%, 0) rotate(-2deg); } to { transform: translate3d(0, 14%, 0) rotate(2deg); } }
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .bd-slow { animation: fx-drift-slow linear both; animation-timeline: view(); }
+    .bd-fast { animation: fx-drift-fast linear both; animation-timeline: view(); }
+  }
+}
+
+/* ---------- Scroll progress + chapter rail ---------- */
+.scroll-progress {
+  position: fixed; inset: 0 0 auto 0; z-index: 70; height: 3px;
+  background: linear-gradient(90deg, var(--blue), var(--mint));
+  transform-origin: 0 50%; transform: scaleX(0);
+  display: none;
+}
+@keyframes fx-progress { to { transform: scaleX(1); } }
+@supports (animation-timeline: scroll()) {
+  .scroll-progress { display: block; animation: fx-progress linear both; animation-timeline: scroll(root); }
+}
+
+.chapters { display: none; }
+@media (min-width: 1280px) {
+  .chapters {
+    display: block; position: fixed; right: 18px; top: 50%; transform: translateY(-50%); z-index: 45;
+  }
+  .chapters ol {
+    list-style: none; margin: 0; padding: 0.6rem 0.45rem; display: grid; gap: 0.15rem;
+    background: rgb(255 255 255 / 0.82); backdrop-filter: blur(8px);
+    border: 1px solid rgb(221 214 200 / 0.8); border-radius: 999px; box-shadow: var(--shadow);
+  }
+  .chapters a {
+    position: relative; display: grid; place-items: center; width: 32px; height: 32px;
+    border-radius: 50%; text-decoration: none; color: var(--ink);
+  }
+  .chapters .dot {
+    width: 8px; height: 8px; border-radius: 50%; background: #b9b2a3;
+    transition: transform 0.25s ease, background-color 0.25s ease, box-shadow 0.25s ease;
+  }
+  .chapters .label {
+    position: absolute; right: calc(100% + 10px); top: 50%; transform: translate(6px, -50%);
+    white-space: nowrap; font-size: 0.82rem; font-weight: 650;
+    background: var(--ink); color: #fff; padding: 0.3rem 0.65rem; border-radius: 999px;
+    opacity: 0; pointer-events: none; transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+  .chapters a:hover .label, .chapters a:focus-visible .label { opacity: 1; transform: translate(0, -50%); }
+  .chapters a:hover .dot { background: var(--ink); transform: scale(1.3); }
+  .chapters a[aria-current] .dot { background: var(--mint); transform: scale(1.6); box-shadow: 0 0 0 3px rgb(75 176 251 / 0.25); }
+}
+
+/* ---------- Chapter tags (story numbering) ---------- */
+.chapter-tag {
+  display: inline-flex; align-items: center; gap: 0.65rem;
+  font-size: var(--step--1); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--mint-ink); margin-bottom: 1rem;
+}
+.chapter-tag .n {
+  display: inline-grid; place-items: center; min-width: 2.1rem; height: 2.1rem; padding: 0 0.4rem;
+  border-radius: 999px; border: 1.5px solid currentColor; font-variant-numeric: tabular-nums; letter-spacing: 0;
+}
+.chapter-tag::after { content: ''; width: 2.5rem; height: 1.5px; background: currentColor; opacity: 0.5; }
+.section--deep .chapter-tag, .on-dark .chapter-tag { color: var(--mint); }
+.on-dark .btn--ghost, .section--deep .btn--ghost { --fg: #fff; border-color: rgb(255 255 255 / 0.6); }
+.on-dark .btn--ghost:hover, .section--deep .btn--ghost:hover { background: #fff; color: var(--ink); }
+
+/* ---------- Titles that settle in, phrases that highlight ---------- */
+/* Movement only, never opacity: headings keep full contrast in every frame. */
+@keyframes fx-title {
+  from { transform: translateY(0.12em); letter-spacing: 0.02em; }
+  to { transform: none; letter-spacing: -0.02em; }
+}
+@keyframes fx-hl { from { background-size: 0% 100%; } to { background-size: 100% 100%; } }
+
+.hl {
+  color: inherit;
+  padding: 0 0.08em;
+  background: linear-gradient(transparent 60%, var(--hl, #bfe1ff) 60%, var(--hl, #bfe1ff) 92%, transparent 92%) no-repeat 0 0 / 100% 100%;
+  -webkit-box-decoration-break: clone; box-decoration-break: clone;
+}
+.section--deep .hl, .on-dark .hl { --hl: rgb(75 176 251 / 0.45); }
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .fx-title { animation: fx-title linear both; animation-timeline: view(); animation-range: entry 0% cover 30%; }
+    .hl { animation: fx-hl linear both; animation-timeline: view(); animation-range: entry 100% cover 45%; }
+  }
+}
+
+/* ---------- Photos as objects with depth ---------- */
+.depth { position: relative; perspective: 1000px; }
+.depth-card {
+  --rx: 0deg; --ry: 0deg; --gx: 50%; --gy: 30%; --glare: 0;
+  position: relative; transform-style: preserve-3d;
+  transform: rotateX(var(--rx)) rotateY(var(--ry));
+  transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+  border-radius: var(--shape);
+  box-shadow: 0 2px 4px rgb(15 42 74 / 0.08), 0 28px 50px -26px rgb(15 42 74 / 0.55);
+}
+.depth-card::after {
+  content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background: radial-gradient(circle at var(--gx) var(--gy), rgb(255 255 255 / 0.35), transparent 55%);
+  opacity: var(--glare); transition: opacity 0.3s ease; mix-blend-mode: soft-light;
+}
+.depth-card.is-tilting { transition: transform 0.12s linear; }
+/* Offset outline plate behind the photo */
+.depth--plate::before {
+  content: ''; position: absolute; inset: 14px -14px -14px 14px; border-radius: var(--shape);
+  border: 2px solid var(--mint); opacity: 0.7;
+}
+.section--deep .depth-card { box-shadow: 0 30px 60px -28px rgb(0 0 0 / 0.7); }
+
+@keyframes fx-photo-in { from { clip-path: inset(12% 8% 12% 8% round 28px); } to { clip-path: inset(0 round 0); } }
+@keyframes fx-photo-zoom { from { transform: scale(1.18); } to { transform: scale(1); } }
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .photo-in { animation: fx-photo-in linear both; animation-timeline: view(); animation-range: entry 0% cover 40%; }
+    .photo-in img { animation: fx-photo-zoom linear both; animation-timeline: view(); animation-range: entry 0% exit 0%; }
+  }
+}
+
+/* ---------- Facts with real figures ---------- */
+.facts { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); }
+.facts li { display: grid; gap: 0.2rem; padding: 0.25rem clamp(0.75rem, 0.4rem + 1.5vw, 2rem); border-left: 1px solid var(--line); }
+.facts li:first-child { border-left: 0; padding-left: 0; }
+.facts .fig {
+  font-family: var(--font-display); font-weight: 400; line-height: 1;
+  font-size: clamp(2rem, 1.4rem + 2.6vw, 3.4rem); color: var(--ink); font-variant-numeric: tabular-nums;
+}
+.facts .cap { font-size: var(--step--1); color: var(--muted); line-height: 1.35; }
+@media (max-width: 479px) {
+  .facts { grid-template-columns: 1fr; gap: 0.9rem; }
+  .facts li { grid-template-columns: 4.5rem 1fr; align-items: center; border-left: 0; padding: 0; }
+}
+
+/* ---------- Film grain (luxury texture, replaces dot grids) ---------- */
+.grain::after {
+  content: ''; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.07;
+}
+/* No blend modes (cheap to paint): inverted noise reads as light grain on dark. */
+.section--deep.grain::after, .on-dark.grain::after { filter: invert(1); opacity: 0.06; }
+
+/* ---------- Full-bleed media background with parallax ("fixed" feel, iOS-safe) ---------- */
+.media-bg { position: absolute; inset: 0; z-index: 0; overflow: hidden; }
+.media-bg > .photo, .media-bg > video {
+  position: absolute; inset: -14% 0; width: 100%; height: 128%; border-radius: 0; object-fit: cover;
+}
+.media-bg > .photo picture, .media-bg > .photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.media-bg::after { content: ''; position: absolute; inset: 0; background: var(--veil, rgb(15 42 74 / 0.78)); }
+@keyframes fx-parallax { from { translate: 0 -9%; } to { translate: 0 9%; } }
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .media-bg > .photo, .media-bg > video { animation: fx-parallax linear both; animation-timeline: view(); }
+  }
+}
+
+/* ---------- Background video pause control (WCAG 2.2.2) ---------- */
+.video-toggle {
+  display: inline-flex; align-items: center; gap: 0.5rem; min-height: 44px; padding: 0.5rem 1rem;
+  background: rgb(255 255 255 / 0.1); color: #fff; border: 1px solid rgb(255 255 255 / 0.45); border-radius: 999px;
+  font: 600 0.9rem var(--font-body); cursor: pointer; margin-top: 1rem;
+}
+.video-toggle:hover { background: rgb(255 255 255 / 0.2); }
+.video-toggle span { display: inline-flex; align-items: center; gap: 0.45rem; }
+.video-toggle[data-paused='true'] .when-playing, .video-toggle[data-paused='false'] .when-paused { display: none; }
+
+/* ---------- Ticker of real place names ----------
+   Auto-scrolls only after scripts/fx.ts adds .is-live (so a pause control
+   exists, WCAG 2.2.2); static without JS or with reduced motion. */
+.ticker { position: relative; background: var(--ink); color: #fff; display: flex; align-items: center; }
+.ticker-viewport { overflow: hidden; flex: 1; mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); }
+.ticker-track { display: flex; width: max-content; gap: 0.75rem; padding: 1rem 0; }
+.tk {
+  display: inline-flex; align-items: center; gap: 0.5rem; white-space: nowrap;
+  padding: 0.55rem 1.1rem; border-radius: 999px; border: 1px solid rgb(255 255 255 / 0.18);
+  background: rgb(255 255 255 / 0.05); font-weight: 600; font-size: 1rem; letter-spacing: 0.01em;
+}
+.tk svg { color: var(--mint); width: 16px; height: 16px; }
+.ticker-toggle {
+  flex: none; display: grid; place-items: center; width: 44px; height: 44px; margin: 0 0.75rem;
+  border-radius: 50%; border: 1px solid rgb(255 255 255 / 0.4); background: transparent; color: #fff; cursor: pointer;
+}
+.ticker-toggle:hover { background: rgb(255 255 255 / 0.12); }
+.ticker-toggle .ic-play { display: none; }
+.ticker.is-paused .ticker-toggle .ic-play { display: block; }
+.ticker.is-paused .ticker-toggle .ic-pause { display: none; }
+@keyframes fx-ticker { to { transform: translateX(-50%); } }
+@media (prefers-reduced-motion: no-preference) {
+  .ticker.is-live .ticker-track { animation: fx-ticker 70s linear infinite; }
+  .ticker.is-live:hover .ticker-track, .ticker.is-live:focus-within .ticker-track, .ticker.is-paused .ticker-track { animation-play-state: paused; }
+}
+
+/* ---------- Checklists on dark sections: light, high-contrast checks ---------- */
+.ticks--dark { margin: 1.25rem 0 2rem; color: #eef0ff; }
+.ticks--dark li::before {
+  background: rgb(75 176 251 / 0.9) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 8.5l2.6 2.5L12 5.5' fill='none' stroke='%230b1260' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/0.8rem no-repeat;
+}
+.site-footer { border-top: 1px solid rgb(255 255 255 / 0.08); }
+
+/* ---------- Snap slider controls (scripts/slider.ts) ---------- */
+.slider-ui { display: flex; align-items: center; justify-content: center; gap: 1rem; margin-top: 1.25rem; }
+.slider-ui[hidden] { display: none; }
+.sl-btn {
+  display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; cursor: pointer;
+  background: var(--white); color: var(--ink); border: 1.5px solid var(--line);
+  box-shadow: 0 6px 16px -10px rgb(15 42 74 / 0.5);
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, opacity 0.2s ease, transform 0.2s ease;
+}
+.sl-btn:hover:not(:disabled) { background: var(--ink); color: #fff; border-color: var(--ink); transform: scale(1.06); }
+.sl-btn:disabled { opacity: 0.35; cursor: default; }
+.sl-dots { display: flex; gap: 0; align-items: center; }
+/* 24px touch target (WCAG 2.5.8); the visible pill is drawn by ::before */
+.sl-dot { position: relative; display: grid; place-items: center; min-width: 24px; height: 24px; padding: 0 4px; border: 0; background: none; cursor: pointer; }
+.sl-dot::before { content: ''; display: block; width: 8px; height: 8px; border-radius: 999px; background: rgb(15 42 74 / 0.22); transition: width 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), background-color 0.3s ease; }
+.sl-dot[aria-current="true"]::before { width: 26px; background: var(--blue); }

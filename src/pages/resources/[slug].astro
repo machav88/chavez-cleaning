@@ -1,0 +1,101 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import { getImage } from 'astro:assets';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import CtaBand from '@/components/CtaBand.astro';
+import ServiceCards from '@/components/ServiceCards.astro';
+import { photos, type PhotoSlug } from '@/data/photos';
+import { abs, articleNode } from '@/lib/schema';
+import PageHero from '@/components/PageHero.astro';
+import Backdrop from '@/components/fx/Backdrop.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('resources', ({ data }) => !data.draft);
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+const { post } = Astro.props as { post: CollectionEntry<'resources'> };
+const { Content, headings } = await render(post);
+const d = post.data;
+const path = `/resources/${post.id}/`;
+const slug = d.photo as PhotoSlug;
+const og = await getImage({ src: photos[slug], width: 1200, height: 630, fit: 'cover', format: 'jpg' });
+const fmt = (dt: Date) => dt.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
+const toc = headings.filter((h) => h.depth === 2);
+const schema = [
+  articleNode({
+    url: abs(path),
+    headline: d.title,
+    description: d.description,
+    image: abs(og.src),
+    datePublished: d.published.toISOString(),
+    dateModified: d.updated?.toISOString(),
+  }),
+];
+---
+<BaseLayout
+  title={d.seoTitle}
+  description={d.description}
+  path={path}
+  ogImage={og.src}
+  ogType="article"
+  breadcrumbs={[{ name: 'Resources', href: '/resources/' }, { name: d.title, href: path }]}
+  schema={schema}
+>
+  <article>
+    <PageHero eyebrow="Resources" title={d.title} lead={d.description} photo={slug} photoAlt={d.photoAlt} position="50% 55%" ctas={false}>
+      <p class="meta">
+        By Chavez House Cleaning · <time datetime={d.published.toISOString().slice(0, 10)}>{fmt(d.published)}</time>
+        {d.updated && <> · Updated <time datetime={d.updated.toISOString().slice(0, 10)}>{fmt(d.updated)}</time></>}
+      </p>
+    </PageHero>
+    <div class="a-shell fx-section grain">
+    <Backdrop variant="mesh" />
+    <div class="wrap a-body">
+      {toc.length > 2 && (
+        <nav class="toc card" aria-labelledby="toc-h">
+          <h2 id="toc-h">On this page</h2>
+          <ol>{toc.map((h) => <li><a href={`#${h.slug}`}>{h.text}</a></li>)}</ol>
+        </nav>
+      )}
+      <div class="prose">
+        <Content />
+        {d.sources.length > 0 && (
+          <section class="sources" aria-labelledby="src-h">
+            <h2 id="src-h">Sources</h2>
+            <ul>{d.sources.map((s) => <li><a href={s.url} rel="noopener" target="_blank">{s.label}<span class="visually-hidden"> (opens in a new tab)</span></a></li>)}</ul>
+          </section>
+        )}
+      </div>
+    </div>
+    </div>
+  </article>
+
+  {d.relatedServices.length > 0 && (
+    <section class="section section--white" aria-labelledby="rel-h">
+      <div class="wrap">
+        <div class="section-head"><p class="eyebrow">Related services</p><h2 id="rel-h">Let us handle it</h2></div>
+        <ServiceCards only={d.relatedServices} />
+      </div>
+    </section>
+  )}
+  <CtaBand heading="Want a professional to take care of it?" text="Get a free quote for your home or office in Dallas." service={d.relatedServices[0]} />
+  <script>
+    // Label table cells with their column header (used by the stacked mobile layout).
+    document.querySelectorAll<HTMLTableElement>('.a-body table').forEach((t) => {
+      const heads = Array.from(t.querySelectorAll('thead th')).map((th) => th.textContent?.trim() ?? '');
+      t.querySelectorAll('tbody tr').forEach((tr) => tr.querySelectorAll('td').forEach((td, i) => { if (i > 0 && heads[i]) td.dataset.label = heads[i]; }));
+    });
+  </script>
+</BaseLayout>
+
+<style>
+  .meta { color: #c9cdea; font-size: var(--step--1); margin: 0; }
+  .a-body { display: grid; gap: 2.5rem; padding-block: 3rem 4rem; align-items: start; }
+  @media (min-width: 1000px) { .a-body { grid-template-columns: 260px 1fr; gap: 4rem; } .toc { position: sticky; top: calc(var(--header-h) + 1.5rem); } }
+  .toc h2 { font-size: 1rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); font-family: var(--font-body); }
+  .toc ol { margin: 0; padding-left: 1.1rem; display: grid; gap: 0.4rem; font-size: 0.95rem; }
+  .prose :global(h2:first-child) { margin-top: 0; }
+  .sources { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--line); font-size: 0.95rem; }
+  .sources h2 { font-size: var(--step-1); margin-top: 0; }
+</style>

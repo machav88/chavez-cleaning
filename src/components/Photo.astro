@@ -1,0 +1,35 @@
+---
+/** Responsive AVIF/WebP picture for a curated photo slug. */
+import { Picture } from 'astro:assets';
+import { photos, type PhotoSlug } from '@/data/photos';
+
+interface Props {
+  slug: PhotoSlug;
+  alt: string;
+  sizes: string;
+  widths?: number[];
+  priority?: boolean;
+  class?: string;
+  aspect?: string; // CSS aspect-ratio for the frame, e.g. "4 / 5"
+  position?: string; // object-position
+  quality?: number;
+}
+const { slug, alt, sizes, widths = [400, 640, 900, 1200], priority = false, class: cls, aspect, position, quality = 70 } = Astro.props;
+const src = photos[slug];
+const usable = widths.filter((w) => w <= src.width);
+---
+<div class={['photo', cls].filter(Boolean).join(' ')} style={aspect ? `aspect-ratio:${aspect}` : undefined}>
+  <Picture
+    src={src}
+    alt={alt}
+    formats={['avif', 'webp']}
+    fallbackFormat="jpg"
+    widths={usable}
+    sizes={sizes}
+    quality={quality}
+    loading={priority ? 'eager' : 'lazy'}
+    decoding={priority ? 'sync' : 'async'}
+    fetchpriority={priority ? 'high' : undefined}
+    style={position ? `object-position:${position}` : undefined}
+  />
+</div>

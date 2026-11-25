@@ -1,0 +1,35 @@
+---
+/**
+ * Verified trust signals (see SITE.trust / SITE.googleRating). Text only, no
+ * decorative icons. `tone` adapts colors to dark or light sections.
+ */
+import { SITE } from '@/config/site';
+interface Props { tone?: 'dark' | 'light'; class?: string }
+const { tone = 'dark', class: cls } = Astro.props;
+const g = SITE.googleRating;
+---
+<ul class:list={['trust', `trust--${tone}`, cls]} aria-label="Why clients trust Chavez House Cleaning">
+  {g && SITE.listings.google && (
+    <li><a href={SITE.listings.google} rel="noopener" target="_blank"><strong>{g.value}</strong>&nbsp;rating on Google · {g.count} reviews<span class="visually-hidden"> (opens in a new tab)</span></a></li>
+  )}
+  {SITE.trust.bbbAccredited && (
+    <li><a href={SITE.listings.bbb} rel="noopener" target="_blank"><strong>BBB</strong>&nbsp;Accredited Business<span class="visually-hidden"> (opens in a new tab)</span></a></li>
+  )}
+  {SITE.trust.licensed && <li><strong>Licensed</strong>&nbsp;cleaning company</li>}
+  {SITE.yearsInBusiness && <li><strong>{SITE.yearsInBusiness}+ years</strong>&nbsp;of cleaning experience</li>}
+  <li><strong>Locally owned</strong>&nbsp;in East Dallas</li>
+  {!g && SITE.listings.google && <li><a href={SITE.listings.google} rel="noopener" target="_blank"><strong>5★</strong>&nbsp;reviews on Google<span class="visually-hidden"> (opens in a new tab)</span></a></li>}
+</ul>
+<style>
+  /* Text line with dividers, deliberately NOT button-like so it never competes with the CTAs. */
+  .trust { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 0.35rem 0; font-size: 0.9rem; line-height: 1.4; }
+  .trust li { display: inline-flex; align-items: center; white-space: nowrap; min-height: 28px; }
+  .trust a { display: inline-flex; align-items: center; min-height: 28px; }
+  .trust li:not(:last-child)::after { content: ''; width: 4px; height: 4px; border-radius: 50%; margin-inline: 0.7rem; background: currentColor; opacity: 0.45; }
+  .trust a { text-decoration: none; color: inherit; border-bottom: 1px solid transparent; }
+  .trust a:hover { border-bottom-color: currentColor; }
+  .trust--dark { color: #dce8f5; }
+  .trust--dark strong { color: var(--mint); }
+  .trust--light { color: var(--muted); }
+  .trust--light strong { color: var(--mint-ink); }
+</style>

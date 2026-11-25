@@ -1,0 +1,193 @@
+---
+import { Image } from 'astro:assets';
+import logo from '@/assets/brand/logo-chavez.png';
+import Icon from './Icon.astro';
+import { SITE } from '@/config/site';
+import { services, serviceUrl } from '@/data/services';
+import { useStrings } from '@/i18n';
+
+const t = useStrings();
+const path = Astro.url.pathname;
+const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
+const links = [
+  { href: '/services/', label: t.nav.services, children: true },
+  { href: '/service-areas/', label: t.nav.areas },
+  { href: '/about/', label: t.nav.about },
+  { href: '/resources/', label: t.nav.resources },
+  { href: '/contact/', label: t.nav.contact },
+];
+---
+<header class="site-header">
+  <div class="wrap bar">
+    <a href="/" class="brand">
+      <Image src={logo} alt="" width={52} height={52} loading="eager" fetchpriority="high" densities={[1, 2]} />
+      <span class="brand-word"><span class="bw-1">Chavez</span> <span class="bw-2">House Cleaning</span></span>
+    </a>
+
+    <nav class="desktop-nav" aria-label={t.nav.primary}>
+      <ul>
+        {links.map((l) => (
+          <li class={l.children ? 'has-menu' : undefined}>
+            <a href={l.href} aria-current={isActive(l.href) ? 'page' : undefined}>
+              {l.label}
+              {l.children && <Icon name="chevron" size={16} class="chev" />}
+            </a>
+            {l.children && (
+              <div class="menu">
+                <ul>
+                  {services.map((s) => (
+                    <li>
+                      <a href={serviceUrl(s.slug)} aria-current={path === serviceUrl(s.slug) ? 'page' : undefined}>
+                        <strong>{s.name}</strong>
+                        <span>{s.cardSummary}</span>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <div class="actions">
+      <a class="phone" href={SITE.phone.href} data-track="call_click" aria-label={`${t.cta.call} ${SITE.phone.display}`}>
+        <Icon name="phone" size={18} />
+        <span>{SITE.phone.display}</span>
+      </a>
+      <a class="btn btn--mint quote" href={SITE.phone.sms} data-track="sms_click"><Icon name="message" size={18} />{t.cta.text}</a>
+    </div>
+
+    <a class="m-call" href={SITE.phone.href} data-track="call_click" aria-label={`${t.cta.call} ${SITE.phone.display}`}><Icon name="phone" size={22} /></a>
+    <details class="mobile-nav">
+      <summary aria-label={t.nav.menu}>
+        <Icon name="menu" class="i-open" />
+        <Icon name="close" class="i-close" />
+        <span class="visually-hidden">{t.nav.menu}</span>
+      </summary>
+      <nav class="panel" aria-label={`${t.nav.primary} (mobile)`}>
+        <ul>
+          <li><a href="/" aria-current={path === '/' ? 'page' : undefined}>{t.nav.home}</a></li>
+          <li>
+            <a href="/services/" aria-current={path === '/services/' ? 'page' : undefined}>{t.nav.allServices}</a>
+            <ul class="sub">
+              {services.map((s) => (
+                <li><a href={serviceUrl(s.slug)} aria-current={path === serviceUrl(s.slug) ? 'page' : undefined}>{s.name}</a></li>
+              ))}
+            </ul>
+          </li>
+          {links.slice(1).map((l) => (
+            <li><a href={l.href} aria-current={isActive(l.href) ? 'page' : undefined}>{l.label}</a></li>
+          ))}
+        </ul>
+        <div class="panel-cta">
+          <a class="btn" href={SITE.phone.href} data-track="call_click"><Icon name="phone" />{t.cta.call} {SITE.phone.display}</a>
+          <a class="btn btn--ghost" href={SITE.phone.sms} data-track="sms_click"><Icon name="message" />{t.cta.text}</a>
+        </div>
+      </nav>
+    </details>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgb(245 248 252 / 0.92);
+    backdrop-filter: saturate(1.4) blur(10px);
+    border-bottom: 1px solid rgb(221 214 200 / 0.7);
+  }
+  .bar { display: flex; align-items: center; gap: 1.25rem; min-height: var(--header-h); }
+  .brand { flex: none; display: block; padding: 4px 0; border-radius: 8px; }
+  .brand img { width: 46px; height: auto; }
+
+  .desktop-nav { display: none; margin-inline: auto; }
+  .desktop-nav > ul { display: flex; gap: 0.25rem; list-style: none; margin: 0; padding: 0; }
+  .desktop-nav a {
+    display: inline-flex; align-items: center; gap: 0.25rem;
+    padding: 0.6rem 0.8rem; border-radius: 999px;
+    color: var(--ink); font-weight: 600; text-decoration: none; font-size: 0.98rem;
+  }
+  .desktop-nav > ul > li > a:hover, .desktop-nav > ul > li > a[aria-current='page'] { background: var(--paper-2); }
+  .desktop-nav a[aria-current='page'] { box-shadow: inset 0 -2px 0 var(--mint); }
+  .has-menu { position: relative; }
+  .desktop-nav :global(.chev) { transition: transform 0.2s ease; }
+  .menu {
+    position: absolute; left: -1rem; top: 100%;
+    width: min(560px, 80vw);
+    padding-top: 0.5rem;
+    visibility: hidden; opacity: 0; transform: translateY(6px);
+    transition: opacity 0.15s ease, transform 0.15s ease, visibility 0.15s;
+  }
+  .menu ul {
+    list-style: none; margin: 0; padding: 0.6rem;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 0.25rem;
+    background: var(--white); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow);
+  }
+  .menu a { display: grid; gap: 0.15rem; padding: 0.7rem 0.8rem; border-radius: 12px; }
+  .menu a:hover { background: var(--paper); }
+  .menu strong { font-weight: 650; }
+  .menu span { font-weight: 400; font-size: 0.85rem; color: var(--muted); line-height: 1.35; }
+  .has-menu:hover .menu, .has-menu:focus-within .menu { visibility: visible; opacity: 1; transform: none; }
+  .has-menu:hover :global(.chev), .has-menu:focus-within :global(.chev) { transform: rotate(180deg); }
+
+  .actions { display: none; align-items: center; gap: 0.75rem; }
+  .phone { display: inline-flex; align-items: center; gap: 0.4rem; font-weight: 650; text-decoration: none; white-space: nowrap; padding: 0.5rem; border-radius: 10px; }
+  .quote { min-height: 44px; padding-inline: 1.1rem; }
+
+  .mobile-nav { margin-left: 0.5rem; }
+  .m-call { margin-left: auto; display: grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; background: var(--sky); color: var(--ink); }
+  @media (min-width: 900px) { .m-call { display: none; } }
+  .mobile-nav summary {
+    list-style: none; cursor: pointer;
+    display: grid; place-items: center;
+    width: 48px; height: 48px; border-radius: 14px;
+    color: var(--ink); border: 1px solid var(--line); background: var(--white);
+  }
+  .mobile-nav summary::-webkit-details-marker { display: none; }
+  .mobile-nav :global(.i-close) { display: none; }
+  .mobile-nav[open] :global(.i-open) { display: none; }
+  .mobile-nav[open] :global(.i-close) { display: block; }
+  .mobile-nav:not([open]) .panel { display: none; }
+  /* Full-screen menu (mobile) with a slide-in transition */
+  .site-header:has(.mobile-nav[open]) { backdrop-filter: none; -webkit-backdrop-filter: none; background: var(--paper); }
+  .panel {
+    position: fixed; left: 0; right: 0; top: var(--header-h); bottom: 0;
+    overflow-y: auto;
+    background: radial-gradient(circle at 100% 0%, rgb(75 176 251 / 0.25), transparent 45%), var(--ink);
+    color: #e6eef8;
+    padding: 1.5rem var(--gutter) 7rem;
+  }
+  @media (prefers-reduced-motion: no-preference) { .mobile-nav[open] .panel { animation: menu-in 0.35s cubic-bezier(0.2, 0.8, 0.2, 1); } }
+  @keyframes menu-in { from { translate: 0 -16px; } }
+  .panel > ul > li > a:not(.btn) { font: 400 1.8rem/1.2 var(--font-display) !important; color: #fff; }
+  .panel .sub a { color: #c4d4e6 !important; }
+  .panel > ul > li { border-color: rgb(255 255 255 / 0.12) !important; }
+  .panel a[aria-current='page'] { color: var(--sky) !important; }
+  .panel-cta .btn { --bg: var(--sky); --fg: var(--ink); }
+  .panel-cta .btn--ghost { --bg: transparent; --fg: #fff; border-color: rgb(255 255 255 / 0.5); }
+  .panel ul { list-style: none; margin: 0; padding: 0; }
+  .panel > ul > li { border-bottom: 1px solid var(--line); }
+  .panel a:not(.btn) { display: block; padding: 0.85rem 0.25rem; font-weight: 650; text-decoration: none; font-size: 1.08rem; color: #fff; }
+  .panel .sub { padding: 0 0 0.6rem 0.9rem; }
+  .panel .sub a { padding: 0.55rem 0.25rem; font-weight: 500; font-size: 1rem; }
+  .panel-cta { display: grid; gap: 0.6rem; margin-top: 1.25rem; }
+
+  @media (min-width: 900px) {
+    .desktop-nav, .actions { display: flex; }
+    .mobile-nav { display: none; }
+    .brand img { width: 52px; }
+  }
+  @media (min-width: 900px) and (max-width: 1120px) {
+    .phone span { display: none; }
+    .brand-word { display: none; }
+    .desktop-nav a { padding: 0.55rem 0.6rem; font-size: 0.94rem; }
+  }
+  .desktop-nav > ul > li > a { white-space: nowrap; }
+  .brand { display: inline-flex; align-items: center; gap: 0.6rem; text-decoration: none; }
+  .brand-word { display: grid; line-height: 1; }
+  .bw-1 { font: 400 1.35rem/1 var(--font-display); color: var(--ink); letter-spacing: -0.01em; }
+  .bw-2 { font: 700 0.68rem/1.3 var(--font-body); letter-spacing: 0.16em; text-transform: uppercase; color: var(--mint-ink); }
+</style>

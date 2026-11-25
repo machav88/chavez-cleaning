@@ -1,0 +1,66 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Photo from '@/components/Photo.astro';
+import Icon from '@/components/Icon.astro';
+import CtaBand from '@/components/CtaBand.astro';
+import type { PhotoSlug } from '@/data/photos';
+import { abs } from '@/lib/schema';
+import PageHero from '@/components/PageHero.astro';
+import Backdrop from '@/components/fx/Backdrop.astro';
+
+const posts = (await getCollection('resources', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.published.valueOf() - a.data.published.valueOf() || a.data.title.localeCompare(b.data.title),
+);
+const title = 'Cleaning Guides & Costs for Dallas Homes | Chavez Resources';
+const description =
+  'Cleaning guides from Chavez House Cleaning: Dallas house and office cleaning costs, a Texas move-out checklist, deep vs. regular and post-construction.';
+const itemList = {
+  '@type': 'ItemList',
+  itemListElement: posts.map((p, i) => ({ '@type': 'ListItem', position: i + 1, url: abs(`/resources/${p.id}/`), name: p.data.title })),
+};
+---
+<BaseLayout title={title} description={description} path="/resources/" pageType="CollectionPage" breadcrumbs={[{ name: 'Resources', href: '/resources/' }]} schema={[itemList]}>
+  <PageHero
+    eyebrow="Resources"
+    title="Cleaning guides for Dallas homes and offices"
+    lead="Straightforward answers to the questions clients ask us most, written by the Chavez House Cleaning team."
+    photo="empty-apartment"
+    photoAlt="Empty apartment with light floors ready after a move-out cleaning"
+    position="50% 55%"
+    ctas={false}
+    compact
+  />
+  <section class="section fx-section grain" aria-label="Articles">
+    <Backdrop variant="mesh" />
+    <div class="wrap">
+      <ul class="posts">
+        {posts.map((p, i) => (
+          <li class="post" data-reveal data-reveal-delay={i * 0.06}>
+            <Photo slug={p.data.photo as PhotoSlug} alt="" sizes="(min-width: 1180px) 370px, (min-width: 700px) 45vw, 92vw" widths={[400, 640, 800]} aspect="16 / 10" />
+            <div class="body">
+              <h2><a href={`/resources/${p.id}/`}>{p.data.title}</a></h2>
+              <p>{p.data.description}</p>
+              <span class="more" aria-hidden="true">Read the guide <Icon name="arrow" size={18} /></span>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+  <CtaBand heading="Rather leave it to us?" text="Get a free quote and we will take care of the cleaning." />
+</BaseLayout>
+<style>
+  .posts { list-style: none; margin: 0; padding: 0; display: grid; gap: 1.5rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); }
+  .post { position: relative; background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius-lg); overflow: hidden; display: flex; flex-direction: column; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+  .post:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+  .post :global(.photo) { border-radius: 0; }
+  .body { padding: 1.25rem 1.4rem 1.5rem; display: flex; flex-direction: column; flex: 1; }
+  h2 { font-size: var(--step-1); }
+  h2 a { text-decoration: none; }
+  h2 a::after { content: ''; position: absolute; inset: 0; }
+  h2 a:focus-visible { outline: none; }
+  .post:has(a:focus-visible) { outline: 3px solid var(--focus); outline-offset: 3px; }
+  p { color: var(--muted); }
+  .more { margin-top: auto; display: inline-flex; align-items: center; gap: 0.35rem; font-weight: 650; color: var(--mint-ink); }
+</style>

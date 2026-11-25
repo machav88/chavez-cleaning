@@ -1,0 +1,85 @@
+---
+/**
+ * Services as a bento grid of different-sized tiles.
+ * Each tile shows a photo of
+ * a clean space that matches the service (Pexels free license or real job).
+ * Every tile is a real link with visible text, so SEO never depends on media.
+ */
+import Photo from './Photo.astro';
+import Icon from './Icon.astro';
+import { services, serviceUrl } from '@/data/services';
+import type { PhotoSlug } from '@/data/photos';
+
+type Tile = { slug: string; size: 'xl' | 'tall' | 'wide' | 'sq'; photo: PhotoSlug; pos?: string; tag: string; icon: 'home' | 'sparkles' | 'calendar' | 'box' | 'building' | 'hammer' };
+// One photo of a clean SPACE per service (no people), matched to the topic.
+const tiles: Tile[] = [
+  { slug: 'house-cleaning', size: 'xl', photo: 'bg-living-white', pos: '50% 60%', tag: 'Most requested', icon: 'home' },
+  { slug: 'office-cleaning', size: 'tall', photo: 'bg-office-reception', pos: '45% 50%', tag: 'Offices · after hours', icon: 'building' },
+  { slug: 'deep-cleaning', size: 'sq', photo: 'space-bath-glass', tag: 'Ceiling to floor', icon: 'sparkles' },
+  { slug: 'recurring-cleaning', size: 'sq', photo: 'space-kitchen-windows', tag: 'Weekly · Biweekly · Every 4 weeks', icon: 'calendar' },
+  { slug: 'move-in-move-out-cleaning', size: 'wide', photo: 'space-empty-sunlit', pos: '50% 65%', tag: 'Empty-home clean', icon: 'box' },
+  { slug: 'post-construction-cleaning', size: 'sq', photo: 'new-construction-drywall', tag: 'After a remodel', icon: 'hammer' },
+];
+const svc = (slug: string) => services.find((s) => s.slug === slug)!;
+---
+<ul class="bento" role="list">
+  {tiles.map((t) => {
+    const s = svc(t.slug);
+    return (
+      <li class:list={['tile', `tile--${t.size}`, 'tile--dark']} data-reveal>
+        <div class="tile-media" aria-hidden="true">
+          <Photo slug={t.photo} alt="" sizes={t.size === 'xl' || t.size === 'wide' ? '(min-width: 960px) 560px, 92vw' : '(min-width: 960px) 280px, 92vw'} widths={[320, 560, 900]} quality={60} position={t.pos ?? '50% 50%'} />
+        </div>
+        <div class="tile-body">
+          <span class="tile-icon"><Icon name={t.icon} size={22} draw /></span>
+          <p class="tile-tag">{t.tag}</p>
+          <h3 class="tile-h"><a href={serviceUrl(s.slug)}>{s.name}</a></h3>
+          <p class="tile-sum">{s.cardSummary}</p>
+          <span class="tile-go" aria-hidden="true"><Icon name="arrow" size={20} /></span>
+        </div>
+      </li>
+    );
+  })}
+</ul>
+
+<style>
+  .bento { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; grid-template-columns: repeat(2, 1fr); grid-auto-rows: minmax(190px, auto); }
+  @media (min-width: 1200px) { .bento { grid-template-columns: repeat(4, 1fr); grid-auto-rows: 240px; } }
+  .tile { position: relative; isolation: isolate; overflow: hidden; border-radius: 28px; display: flex; align-items: flex-end; transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.35s ease; }
+  .tile:hover { transform: translateY(-4px); box-shadow: 0 30px 50px -30px rgb(15 42 74 / 0.55); }
+  .tile--xl { grid-column: span 2; grid-row: span 2; border-radius: 28px 120px 28px 28px; }
+  .tile--tall { grid-row: span 2; }
+  .tile--wide { grid-column: span 2; }
+  @media (max-width: 1199px) and (min-width: 521px) { .tile:last-child { grid-column: span 2; } }
+  @media (max-width: 1199px) { .tile--xl, .tile--wide { grid-column: span 2; } .tile--tall { grid-row: span 2; } .tile--xl { min-height: 420px; } }
+  @media (max-width: 520px) { .bento { grid-template-columns: 1fr; } .tile--xl, .tile--wide, .tile--tall { grid-column: auto; } .tile--tall { grid-row: auto; min-height: 380px; } }
+
+  .tile--dark { background: var(--ink); color: #e6eef8; }
+  .tile--sun { background: var(--sun); color: var(--ink); }
+  .tile--light { background: var(--white); border: 1px solid var(--line); color: var(--ink-soft); }
+  .tile-media { position: absolute; inset: 0; z-index: -2; }
+  .tile-media :global(.photo) { position: absolute; inset: 0; border-radius: 0; }
+  .tile-media :global(img) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: scale 1.2s cubic-bezier(0.2, 0.8, 0.2, 1); }
+  .tile:hover .tile-media :global(img) { scale: 1.08; }
+  .tile--dark::before { content: ''; position: absolute; inset: 0; z-index: -1; background: linear-gradient(to top, rgb(15 42 74 / 0.92) 0%, rgb(15 42 74 / 0.7) 32%, rgb(15 42 74 / 0) 62%); }
+  .tile-icon { display: grid; place-items: center; width: 42px; height: 42px; margin-bottom: 0.7rem; border-radius: 50%; background: rgb(255 255 255 / 0.9); color: var(--mint-ink); box-shadow: 0 10px 20px -10px rgb(15 42 74 / 0.6); }
+  .tile--light .tile-icon { background: var(--mint-wash); color: var(--mint-ink); }
+  .tile-body { position: relative; width: 100%; padding: 1.4rem 4rem 1.4rem 1.4rem; }
+  .tile--xl .tile-body { padding: 2rem 5rem 2rem 2rem; }
+  .tile-tag { margin: 0 0 0.35rem; font-size: 0.74rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--sky); }
+  .tile--sun .tile-tag, .tile--light .tile-tag { color: var(--mint-ink); }
+  .tile--sun .tile-tag { color: #6b3d00; }
+  .tile-h { margin: 0 0 0.35rem; font-size: clamp(1.3rem, 1.1rem + 0.8vw, 1.7rem); color: inherit; }
+  .tile--xl .tile-h { font-size: clamp(1.8rem, 1.3rem + 1.8vw, 2.8rem); }
+  .tile--dark .tile-h { color: #fff; }
+  .tile-h a { color: inherit; text-decoration: none; }
+  .tile-h a::after { content: ''; position: absolute; inset: 0; z-index: 3; border-radius: inherit; }
+  .tile:has(a:focus-visible) { outline: 3px solid var(--focus); outline-offset: 3px; }
+  .tile-h a:focus-visible { outline: none; }
+  .tile-sum { margin: 0; font-size: 0.95rem; max-width: 42ch; }
+  .tile--dark .tile-sum { color: #d6e4f3; }
+  .tile-go { position: absolute; right: 1.2rem; bottom: 1.3rem; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: var(--sky); color: var(--ink); transition: transform 0.3s ease; }
+  .tile--sun .tile-go { background: var(--ink); color: #fff; }
+  .tile:hover .tile-go { transform: rotate(-35deg); }
+  @media (prefers-reduced-motion: reduce) { .tile, .tile-media video, .tile-go { transition: none; } .tile:hover { transform: none; } }
+</style>

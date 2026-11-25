@@ -1,0 +1,31 @@
+---
+/**
+ * HomeSuite Pro "FastQuoted" instant-quote widget for Chavez House Cleaning
+ * (org-hs_EMiqZbPjmfauEbuPDfRv). Embed code supplied by Helice; rendered at its
+ * full size (width 100%, height 680) — never shrink it.
+ * `primary` renders the single #fastquoted-root container + bridge script; use
+ * it on exactly one instance per page (ids must be unique).
+ */
+interface Props { primary?: boolean; eager?: boolean; class?: string }
+const { primary = true, eager = false, class: cls } = Astro.props;
+const src = 'https://widget.homesuitepro.com/?org=org-hs_EMiqZbPjmfauEbuPDfRv&api=https%3A%2F%2Ffastquoted.homesuitepro.com';
+---
+<div class:list={['fq', cls]}>
+  {primary && <div id="fastquoted-root"></div>}
+  <iframe
+    data-fastquoted-widget="true"
+    src={src}
+    title="FastQuoted — instant cleaning quote from Chavez House Cleaning"
+    width="100%"
+    height="680"
+    style="border:0;background:transparent"
+    allowtransparency="true"
+    loading={eager ? 'eager' : 'lazy'}
+    referrerpolicy="strict-origin-when-cross-origin"
+  ></iframe>
+  {primary && <script is:inline src="https://widget.homesuitepro.com/fastquoted-bridge.js" defer></script>}
+</div>
+<style>
+  .fq { width: 100%; min-width: 0; }
+  .fq iframe { display: block; width: 100%; min-height: 680px; }
+</style>

@@ -1,0 +1,163 @@
+---
+/**
+ * Service × city landing page. Content: src/data/local.ts (unique per page)
+ * + the parent service checklist + shared city context. Static, no extra JS.
+ */
+import type { GetStaticPaths } from 'astro';
+import { getImage } from 'astro:assets';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Icon from '@/components/Icon.astro';
+import Faq from '@/components/Faq.astro';
+import CtaBand from '@/components/CtaBand.astro';
+import PageHero from '@/components/PageHero.astro';
+import GoogleReviews from '@/components/GoogleReviews.astro';
+import Backdrop from '@/components/fx/Backdrop.astro';
+import { services, serviceUrl, type Service } from '@/data/services';
+import { localPages, cityBySlug, localUrl, localForCity, localForService, type LocalPage, type City } from '@/data/local';
+import { photos } from '@/data/photos';
+import { abs, serviceNode } from '@/lib/schema';
+
+export const getStaticPaths = (() =>
+  localPages.map((p) => ({
+    params: { slug: p.service, city: p.city },
+    props: { page: p, service: services.find((s) => s.slug === p.service)!, city: cityBySlug(p.city) },
+  }))) satisfies GetStaticPaths;
+
+const { page: p, service: s, city: c } = Astro.props as { page: LocalPage; service: Service; city: City };
+const path = localUrl(s.slug, c.slug);
+const url = abs(path);
+const og = await getImage({ src: photos[s.photo], width: 1200, height: 630, fit: 'cover', format: 'jpg' });
+const schema = [serviceNode({ name: `${s.name} in ${c.name}`, description: p.seo.description, url, image: abs(og.src), areaServed: c.label })];
+
+// Unique FAQs first, then two from the parent service for depth.
+const faqs = [...p.faqs, ...s.faqs.slice(0, 2)];
+const sameCity = localForCity(c.slug).filter((x) => x.service !== s.slug);
+const sameService = localForService(s.slug).filter((x) => x.city !== c.slug);
+const svcName = (slug: string) => services.find((x) => x.slug === slug)!.name;
+const hubHref = `/service-areas/${c.hub}/`;
+---
+<BaseLayout
+  title={p.seo.title}
+  description={p.seo.description}
+  path={path}
+  ogImage={og.src}
+  breadcrumbs={[{ name: 'Services', href: '/services/' }, { name: s.name, href: serviceUrl(s.slug) }, { name: c.name, href: path }]}
+  schema={schema}
+>
+  <PageHero eyebrow={`${s.name} · ${c.name}`} title={p.h1} lead={p.lead} photo={s.photo} photoAlt={s.photoAlt} service={s.slug} position="50% 55%" />
+
+  <section class="section section--white fx-section grain" aria-labelledby="intro-h">
+    <Backdrop variant="bars" flip />
+    <div class="wrap intro-grid">
+      <div class="prose">
+        <p class="chapter-tag"><span class="n">01</span>{c.name}</p>
+        <h2 id="intro-h" class="fx-title big-h">{s.name} for {c.name} {s.track === 'business' ? 'businesses' : 'homes'}</h2>
+        {p.intro.map((t) => <p>{t}</p>)}
+        <h3>About {c.name}</h3>
+        <p>{c.homes}</p>
+      </div>
+      <div class="side-card">
+        <h2 id="nb-h" class="small-h">Where we clean in {c.name}</h2>
+        <ul class="nb">{c.neighborhoods.map((n) => <li><Icon name="pin" size={16} />{n}</li>)}</ul>
+        <p class="side-note">Not sure if we cover your street? <a href={hubHref}>See the {c.hub === 'park-cities' ? 'Park Cities' : 'Uptown & East Dallas'} page</a> or just call or text us.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section fx-section grain" aria-labelledby="tips-h">
+    <Backdrop variant="mesh" />
+    <div class="wrap">
+      <p class="chapter-tag"><span class="n">02</span>Local know-how</p>
+      <h2 id="tips-h" class="fx-title big-h">What to know about {s.name.toLowerCase()} in {c.name}</h2>
+      <ul class="tips">
+        {p.tips.map((t, i) => (
+          <li class="card" data-reveal>
+            <span class="t-n" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+            <h3>{t.title}</h3>
+            <p>{t.text}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section section--white fx-section grain" aria-labelledby="list-h">
+    <Backdrop variant="bars" />
+    <div class="wrap">
+      <p class="chapter-tag"><span class="n">03</span>What is included</p>
+      <h2 id="list-h" class="fx-title big-h">Our {s.name.toLowerCase()} checklist</h2>
+      <div class="checklist">
+        {s.checklist.map((g) => (
+          <div class="card cl-card">
+            <h3>{g.area}</h3>
+            <ul class="ticks">{g.items.map((it) => <li>{it}</li>)}</ul>
+          </div>
+        ))}
+      </div>
+      <p class="more"><a class="link-arrow" href={serviceUrl(s.slug)}>Everything about our {s.name.toLowerCase()} service<Icon name="arrow" /></a></p>
+    </div>
+  </section>
+
+  <GoogleReviews heading={`Why ${c.name} clients choose us on`} />
+
+  <Faq items={faqs} heading={`${s.name} in ${c.name}: questions`} class="section--white fx-section grain" chapter="05">
+    <Backdrop slot="backdrop" variant="mesh" flip />
+  </Faq>
+
+  <section class="section fx-section grain" aria-labelledby="more-h">
+    <Backdrop variant="map" />
+    <div class="wrap more-grid">
+      <p class="chapter-tag"><span class="n">06</span>Nearby</p>
+      <h2 id="more-h" class="fx-title big-h">More cleaning services near you</h2>
+      <div class="link-cols">
+        {sameCity.length > 0 && (
+          <nav aria-label={`Other services in ${c.name}`}>
+            <h3>Other services in {c.name}</h3>
+            <ul>{sameCity.map((x) => <li><a href={localUrl(x.service, x.city)}>{svcName(x.service)} in {c.name}</a></li>)}</ul>
+          </nav>
+        )}
+        {sameService.length > 0 && (
+          <nav aria-label={`${s.name} in other cities`}>
+            <h3>{s.name} in other cities</h3>
+            <ul>{sameService.map((x) => <li><a href={localUrl(x.service, x.city)}>{s.name} in {cityBySlug(x.city).name}</a></li>)}</ul>
+          </nav>
+        )}
+        <nav aria-label="All services">
+          <h3>All services</h3>
+          <ul>{services.map((x) => <li><a href={serviceUrl(x.slug)}>{x.name}</a></li>)}</ul>
+        </nav>
+      </div>
+    </div>
+  </section>
+
+  <CtaBand heading={`Get a free ${s.name.toLowerCase()} quote in ${c.name}`} text={s.track === 'business' ? 'Tell us your square footage, how often you need us and your business hours. We reply with a free quote.' : 'Call, text or email us with a few details about your home and we will reply with a free quote.'} service={s.slug} />
+</BaseLayout>
+
+<style>
+  .big-h { font-size: clamp(2rem, 1.4rem + 2.4vw, 3.2rem); letter-spacing: -0.03em; }
+  .small-h { font-size: var(--step-1); margin-top: 0; }
+  .intro-grid { display: grid; gap: 3rem; }
+  @media (min-width: 900px) { .intro-grid { grid-template-columns: 1.25fr 0.75fr; gap: 4.5rem; align-items: start; } .side-card { position: sticky; top: calc(var(--header-h) + 2rem); } }
+  .intro-grid .prose h2 { margin-top: 0; }
+  .side-card { background: var(--white); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 1.5rem; box-shadow: 0 22px 40px -30px rgb(15 42 74 / 0.45); }
+  .nb { list-style: none; padding: 0; margin: 0 0 1rem; display: grid; gap: 0.5rem; }
+  .nb li { display: flex; gap: 0.5rem; align-items: center; color: var(--ink); }
+  .nb :global(svg) { color: var(--mint-ink); flex: none; }
+  .side-note { margin: 0; color: var(--muted); font-size: 0.95rem; }
+
+  .tips { list-style: none; padding: 0; margin: 2rem 0 0; display: grid; gap: 1.25rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); }
+  .tips li { position: relative; border-radius: var(--radius-lg); }
+  .tips h3 { font-size: var(--step-1); padding-right: 3rem; }
+  .tips p { margin: 0; color: var(--muted); }
+  .t-n { position: absolute; top: 1.1rem; right: 1.3rem; font: 400 2.2rem/1 var(--font-display); color: transparent; -webkit-text-stroke: 1.2px rgb(15 42 74 / 0.25); }
+
+  .checklist { display: grid; gap: 1.25rem; margin-top: 2rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); }
+  .cl-card { border-radius: var(--radius-lg); }
+  .checklist h3 { font-size: var(--step-1); padding-bottom: 0.6rem; border-bottom: 1px solid var(--line); margin-bottom: 1rem; }
+  .more { margin: 1.75rem 0 0; }
+
+  .link-cols { display: grid; gap: 2rem; margin-top: 2rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); }
+  .link-cols h3 { font-size: var(--step-0); text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+  .link-cols ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.6rem; }
+  .link-cols a { font-weight: 600; }
+</style>

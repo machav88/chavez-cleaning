@@ -1,0 +1,23 @@
+---
+/**
+ * Decorative section background: a photo of a clean SPACE (no people) under a
+ * brand-colored veil so text keeps WCAG contrast. Lazy, low quality (it is
+ * blurred/veiled anyway). Parent section needs position: relative.
+ */
+import Photo from './Photo.astro';
+import type { PhotoSlug } from '@/data/photos';
+interface Props { slug: PhotoSlug; tone?: 'light' | 'dark'; position?: string; blur?: boolean }
+const { slug, tone = 'light', position = '50% 50%', blur = false } = Astro.props;
+---
+<div class:list={['sbg', `sbg--${tone}`, blur && 'sbg--blur']} aria-hidden="true">
+  <Photo slug={slug} alt="" sizes="100vw" widths={[800, 1400, 1920]} quality={45} position={position} />
+</div>
+<style>
+  .sbg { position: absolute; inset: 0; z-index: -1; overflow: hidden; }
+  .sbg :global(.photo) { position: absolute; inset: 0; border-radius: 0; background: none; }
+  .sbg :global(.photo img) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .sbg--blur :global(.photo img) { filter: blur(3px) saturate(1.1); scale: 1.04; }
+  .sbg::after { content: ''; position: absolute; inset: 0; }
+  .sbg--light::after { background: linear-gradient(180deg, rgb(245 248 252 / 0.86) 0%, rgb(245 248 252 / 0.62) 45%, rgb(245 248 252 / 0.86) 100%); }
+  .sbg--dark::after { background: linear-gradient(180deg, rgb(15 42 74 / 0.86), rgb(15 42 74 / 0.8)); }
+</style>

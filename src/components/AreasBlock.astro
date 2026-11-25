@@ -1,0 +1,31 @@
+---
+import Icon from './Icon.astro';
+import { areas } from '@/data/areas';
+interface Props { headingLevel?: 'h2' | 'h3' }
+const { headingLevel = 'h3' } = Astro.props;
+const H = headingLevel;
+const groups = [
+  { title: 'Uptown & East Dallas', href: '/service-areas/dallas/', note: 'Our core area, minutes from our East Dallas base', list: areas.filter((a) => a.hub === 'dallas') },
+  { title: 'The Park Cities', href: '/service-areas/park-cities/', note: 'Highland Park and University Park', list: areas.filter((a) => a.hub === 'park-cities') },
+  { title: 'Nearby cities', href: '/contact/', note: 'Ask us about availability', list: areas.filter((a) => a.hub === null) },
+];
+---
+<div class="grid grid--3">
+  {groups.map((g) => (
+    <div class="card" data-reveal>
+      <H class="g-h"><a href={g.href}>{g.title}</a></H>
+      <p class="note-line">{g.note}</p>
+      <ul>
+        {g.list.map((a) => <li><Icon name="pin" size={16} />{a.name}</li>)}
+      </ul>
+    </div>
+  ))}
+</div>
+<style>
+  .g-h { font-size: var(--step-1); margin-bottom: 0.2rem; }
+  .g-h a { text-decoration-color: var(--mint); }
+  .note-line { font-size: var(--step--1); color: var(--muted); }
+  ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.4rem; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+  li { display: flex; align-items: center; gap: 0.4rem; color: var(--ink); font-weight: 500; }
+  li :global(svg) { color: var(--mint-ink); flex: none; }
+</style>
