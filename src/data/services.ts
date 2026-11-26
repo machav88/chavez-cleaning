@@ -2,7 +2,7 @@
  * Service pages content (English) — Chavez House Cleaning, Dallas TX.
  *
  * Services and frequencies come from the Notion client record (basic and deep
- * cleaning; weekly, biweekly, every 4 weeks; no laundry service) and the
+ * cleaning; weekly, biweekly, every 3 weeks, monthly; no laundry service) and the
  * previous website (house, deep, move in/out, office, construction cleaning).
  * Keyword targets: docs/KEYWORDS.md. Nothing here promises prices, licenses,
  * insurance or response times. `status: 'validate'` = scope to confirm with Maria.
@@ -90,7 +90,7 @@ export const services: Service[] = [
     eyebrow: 'Our most requested service',
     h1: 'House cleaning service in Dallas, TX',
     answer:
-      'Chavez House Cleaning is a locally owned house cleaning and maid service in Dallas. We clean kitchens, bathrooms, bedrooms, living areas and floors with the same checklist every visit, one time or weekly, biweekly or every 4 weeks.',
+      'Chavez House Cleaning is a locally owned house cleaning and maid service in Dallas. We clean kitchens, bathrooms, bedrooms, living areas and floors with the same checklist every visit, one time or weekly, biweekly, every 3 weeks or monthly.',
     lead:
       'A thorough, room-by-room clean of the spaces you live in every day, for houses, apartments and condos in Uptown, East Dallas and the Park Cities.',
     cardSummary: 'Room-by-room cleaning of kitchens, bathrooms, bedrooms and floors, once or on a schedule.',
@@ -124,7 +124,7 @@ export const services: Service[] = [
     secondaryPhoto: { slug: 'kitchen-quartz-counter', alt: 'Quartz kitchen counter and navy cabinets wiped and polished after a cleaning', caption: 'A real Chavez kitchen clean' },
     faqs: [
       { q: 'How much does house cleaning cost in Dallas?', a: 'It depends on the size of the home (bedrooms, bathrooms, square footage), its condition, the type of cleaning and any add-ons. Call or text us with those details and we will send a free quote before you book. Our cost guide explains what changes the price.' },
-      { q: 'Is Chavez House Cleaning a maid service?', a: 'Yes. We are a locally owned house cleaning and maid service based in East Dallas. Our team comes to your home with a written checklist, one time or on a weekly, biweekly or every-4-weeks schedule.' },
+      { q: 'Is Chavez House Cleaning a maid service?', a: 'Yes. We are a locally owned house cleaning and maid service based in East Dallas. Our team comes to your home with a written checklist, one time or on a weekly, biweekly, every-3-weeks or monthly schedule.' },
       { q: 'Can I book just one cleaning?', a: 'Yes. One-time cleanings use the same checklist as our recurring visits. Many clients start with one visit and then decide on a schedule.' },
       { q: 'Do I need to be home during the cleaning?', a: 'No. Many clients leave entry instructions, a key or a door code. Let us know how to enter and how to handle any alarm system.' },
       { q: 'Do you do laundry?', a: 'No. We do not offer laundry service. If you leave fresh sheets out, we are happy to make the beds.' },
@@ -163,7 +163,7 @@ export const services: Service[] = [
       ],
     },
     goodFor: [
-      { title: 'First visit', text: 'Sets a clean baseline before weekly, biweekly or every-4-weeks service.' },
+      { title: 'First visit', text: 'Sets a clean baseline before weekly, biweekly, every-3-weeks or monthly service.' },
       { title: 'Seasonal reset', text: 'Spring cleaning, before Thanksgiving or the holidays, or after summer.' },
       { title: 'Before hosting', text: 'When guests will notice the details, not just the counters.' },
       { title: 'Built-up grime', text: 'Greasy kitchens, soap-scum showers, dusty vents and baseboards.' },
@@ -194,30 +194,31 @@ export const services: Service[] = [
     status: 'confirmed',
     track: 'home',
     seo: {
-      title: 'Weekly & Biweekly House Cleaning in Dallas, TX | Chavez',
+      title: 'Weekly, Biweekly & Monthly House Cleaning in Dallas, TX',
       description:
-        'Recurring house cleaning in Dallas: weekly, biweekly or every 4 weeks, with the same checklist every visit. Locally owned, on time. Call or text for a quote.',
+        'Recurring house cleaning in Dallas: weekly, biweekly, every 3 weeks or monthly, with the same checklist every visit. Locally owned, on time. Free quote.',
     },
-    eyebrow: 'Weekly · biweekly · every 4 weeks',
-    h1: 'Weekly and biweekly house cleaning in Dallas',
+    eyebrow: 'Weekly · biweekly · every 3 weeks · monthly',
+    h1: 'Weekly, biweekly and monthly house cleaning in Dallas',
     answer:
-      'Recurring cleaning means our team comes back on a fixed schedule (every week, every two weeks or every four weeks) and repeats the same checklist each time, so your Dallas home stays clean without you having to book again.',
+      'Recurring cleaning means our team comes back on a fixed schedule (every week, every two weeks, every three weeks or once a month) and repeats the same checklist each time, so your Dallas home stays clean without you having to book again.',
     lead: 'The easiest way to keep a home consistently clean: pick a schedule once and we take it from there.',
-    cardSummary: 'The same checklist on a weekly, biweekly or every-4-weeks schedule.',
+    cardSummary: 'The same checklist every week, 2 weeks, 3 weeks or month.',
     photo: 'living-room-hardwood',
     photoAlt: 'Clean living room with navy sectional and shining hardwood floors in a Dallas home',
     intro: {
       heading: 'How recurring cleaning works',
       paragraphs: [
         'Most of our long-term clients are on a schedule. As one of them wrote on Google, “Maria and her team have been cleaning our home for several months. They always arrive on time, communicate expectations clearly, and leave our home sparkling clean.”',
-        'You choose weekly, biweekly or every 4 weeks. We repeat the same checklist each visit (kitchen, bathrooms, bedrooms, living areas and floors) and you can add extras like the inside of the fridge or oven when you need them.',
+        'You choose weekly, biweekly, every 3 weeks or monthly. We repeat the same checklist each visit (kitchen, bathrooms, bedrooms, living areas and floors) and you can add extras like the inside of the fridge or oven when you need them.',
         'If travel, guests or a new baby change your routine, tell us and we adjust the schedule with you.',
       ],
     },
     goodFor: [
       { title: 'Weekly', text: 'Large homes, families with kids or pets, and people who host often.' },
       { title: 'Biweekly', text: 'The most popular choice: kitchens and baths never get out of hand.' },
-      { title: 'Every 4 weeks', text: 'Smaller apartments and condos, or a monthly reset on top of your own upkeep.' },
+      { title: 'Every 3 weeks', text: 'A middle ground for couples and small households who tidy up in between.' },
+      { title: 'Monthly', text: 'Smaller apartments and condos, or a monthly reset on top of your own upkeep.' },
     ],
     checklistHeading: 'What every recurring visit covers',
     checklist: [
@@ -228,7 +229,7 @@ export const services: Service[] = [
     extras: { heading: 'Rotate these extras between visits', text: 'Many clients add one extra per visit so the whole home stays on track.', items: ADD_ONS },
     secondaryPhoto: { slug: 'sunroom-sofa-rug', alt: 'Sunroom with tall windows and a velvet sofa after a recurring cleaning' },
     faqs: [
-      { q: 'Which schedule should I choose?', a: 'Biweekly works for most Dallas households. Weekly suits large homes, families with pets and frequent hosts; every 4 weeks suits smaller apartments or people who keep up with daily tidying.' },
+      { q: 'Which schedule should I choose?', a: 'Biweekly works for most Dallas households. Weekly suits large homes, families with pets and frequent hosts; every 3 weeks or monthly suits smaller apartments or people who keep up with daily tidying.' },
       { q: 'Do I need a deep cleaning first?', a: 'If the home has not been professionally cleaned recently, we recommend one deep cleaning first so regular visits start from a clean baseline.' },
       { q: 'Can I skip or move a visit?', a: 'Yes. Let us know as early as you can and we will find another day that works.' },
     ],
@@ -294,9 +295,9 @@ export const services: Service[] = [
     seo: {
       title: 'Office Cleaning Services in Dallas, TX | Chavez Cleaning',
       description:
-        'Office and small commercial cleaning in Uptown, Downtown and East Dallas. After-hours or weekly schedules, custom checklist. Call (972) 330-0164 for a quote.',
+        'Office cleaning for dental offices, law firms and small businesses in Dallas. After-hours schedules, custom checklist. Call (972) 330-0164 for a quote.',
     },
-    eyebrow: 'Offices · studios · small commercial spaces',
+    eyebrow: 'Dental offices · law firms · small businesses',
     h1: 'Office cleaning services in Dallas, TX',
     answer:
       'Chavez House Cleaning cleans offices, studios and small commercial spaces in Uptown, Downtown, Deep Ellum and East Dallas on a schedule built around your hours: after closing, early morning or on weekends, weekly or several times a week.',
@@ -309,12 +310,13 @@ export const services: Service[] = [
       heading: 'Office cleaning that fits around your business',
       paragraphs: [
         'Your business has a mission and clients to keep happy. The state of your office or store speaks for you before anyone says a word, and a clean workspace also helps keep sick days down. That is why we do not sell a one-size package: we walk through your space, agree on a checklist and a schedule, and repeat it consistently.',
-        'Most of the offices we clean are small and mid-size: professional offices and suites in Uptown and on McKinney Avenue, downtown offices in converted buildings, creative studios in Deep Ellum, and storefronts in East Dallas. We usually work after hours or early in the morning so nobody has to work around us.',
+        'Most of the offices we clean are small and mid-size: dental offices, law firms, professional suites in Uptown and on McKinney Avenue, downtown offices in converted buildings, creative studios in Deep Ellum, and storefronts in East Dallas. We usually work after hours or early in the morning so nobody has to work around us.',
         'The same things clients praise us for at home matter even more in an office: showing up when we said we would, clear communication, and the same quality every visit. Maria Chavez sets up each new office personally and stays your direct contact.',
       ],
     },
     goodFor: [
-      { title: 'Professional offices', text: 'Law, real estate, insurance and financial offices in Uptown and Downtown.' },
+      { title: 'Dental offices', text: 'Waiting rooms, front desk, restrooms and break rooms kept spotless for patients, after hours.' },
+      { title: 'Law firms & professional offices', text: 'Law, real estate, insurance and financial offices in Uptown and Downtown.' },
       { title: 'Creative studios', text: 'Agencies, salons and studios in Deep Ellum and Lower Greenville.' },
       { title: 'Small retail & showrooms', text: 'Storefronts that need to look sharp before opening.' },
       { title: 'Shared suites & coworking', text: 'Common areas, kitchens and restrooms kept consistent between tenants.' },
@@ -331,9 +333,10 @@ export const services: Service[] = [
     secondaryPhoto: { slug: 'kitchen-quartz-counter', alt: 'Clean quartz counter and cabinets in a break room after an office cleaning' },
     faqs: [
       { q: 'How much does office cleaning cost in Dallas?', a: 'It depends on the square footage, how many restrooms and kitchens the space has, how many times a week you need us and what is on the checklist. After a short walkthrough we give you a fixed quote per visit or per month. Our office cleaning cost guide explains the factors.' },
+      { q: 'Do you clean dental offices and law firms?', a: 'Yes. Dental offices and law firms are a big part of our office work: waiting rooms, front desks, private offices, restrooms and break rooms, cleaned after hours so patients and clients always walk into a clean space. Clinical sterilization of dental instruments and treatment equipment stays with your staff.' },
       { q: 'Do you clean after business hours?', a: 'Yes. Most offices we clean are done after closing, early in the morning or on weekends, so your team never has to work around us.' },
       { q: 'How often should an office be cleaned?', a: 'Most small offices do well with one to three visits per week. Offices with heavy foot traffic, a busy break room or client-facing areas usually need more frequent visits for restrooms and kitchens.' },
-      { q: 'Which areas do you cover for office cleaning?', a: 'Uptown, Downtown Dallas, Deep Ellum, Knox-Henderson, Oak Lawn, Lower Greenville and nearby East Dallas. For other areas, call or text us and we will tell you if we can schedule it.' },
+      { q: 'Which areas do you cover for office cleaning?', a: 'Uptown, Downtown Dallas, Deep Ellum, Knox-Henderson, Oak Lawn, Lower Greenville and East Dallas, plus Richardson, Plano, Allen, Carrollton, Addison, Garland, Irving and Mesquite.' },
       { q: 'Do you provide supplies?', a: 'We bring our own cleaning products and equipment. Consumables such as toilet paper, soap and paper towels are usually supplied by the office, and we restock them.' },
     ],
     related: ['post-construction-cleaning', 'deep-cleaning', 'move-in-move-out-cleaning'],

@@ -11,7 +11,7 @@ export const GET: APIRoute = async ({ site }) => {
   const posts = (await getCollection('resources', ({ data }) => !data.draft)).sort((a, b) => +b.data.published - +a.data.published);
   const body = `# ${SITE.name}
 
-> ${SITE.legalName} is a locally owned house cleaning, maid service and office cleaning company based in East Dallas, Texas (75223), run by ${SITE.contactPerson}. We clean homes, apartments and offices in Uptown, Lower Greenville, the M Streets, Swiss Avenue, Munger Place, Lakewood, Knox-Henderson, Oak Lawn, Deep Ellum, Downtown Dallas, Highland Park and University Park: house cleaning, deep cleaning, weekly/biweekly/every-4-weeks cleaning, move-in/move-out cleaning, office cleaning and post-construction cleaning. No laundry service. Free quotes by phone, text or email.
+> ${SITE.legalName} is a locally owned house cleaning, maid service and office cleaning company based in East Dallas, Texas (75223), run by ${SITE.contactPerson}. We clean homes, apartments and offices in Uptown, Lower Greenville, the M Streets, Swiss Avenue, Munger Place, Lakewood, White Rock Lake, Knox-Henderson, Oak Lawn, Deep Ellum, Downtown Dallas, Highland Park, University Park and nearby cities (Richardson, Plano, Allen, Carrollton, Addison, Garland, Irving, Mesquite). Our main focus is office cleaning for dental offices, law firms and small businesses, plus recurring and move-in/move-out cleaning: house cleaning, deep cleaning, weekly/biweekly/every-3-weeks/monthly cleaning, move-in/move-out cleaning, office cleaning and post-construction cleaning. No laundry service. Free quotes by phone, text or email.
 
 - Phone / text: ${SITE.phone.display} (${SITE.phone.e164})
 - Email: ${SITE.email}
@@ -28,6 +28,7 @@ ${services.map((s) => `- [${s.name}](${u(`/services/${s.slug}/`)}): ${s.answer}`
 ## Service areas
 ${areaPages.map((a) => `- [${a.name}](${u(`/service-areas/${a.slug}/`)})`).join('\n')}
 - Core areas: ${areas.filter((a) => a.hub).map((a) => a.name).join(', ')} ([full list](${u('/service-areas/')}))
+- Nearby cities served: ${areas.filter((a) => !a.hub).map((a) => a.name).join(', ')}
 
 ## Services by neighborhood
 ${localPages.map((p) => `- [${services.find((s) => s.slug === p.service)!.name} in ${cityBySlug(p.city).label}](${u(localUrl(p.service, p.city))})`).join('\n')}

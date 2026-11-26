@@ -113,7 +113,7 @@ export const localPages: LocalPage[] = [
     city: 'uptown',
     seo: {
       title: 'House Cleaning in Uptown Dallas | Maid Service | Chavez',
-      description: 'Apartment and condo cleaning in Uptown Dallas, from McKinney Ave to the Katy Trail. One-time or weekly, biweekly, every 4 weeks. Call or text for a free quote.',
+      description: 'Apartment and condo cleaning in Uptown Dallas, from McKinney Ave to the Katy Trail. One-time or weekly, biweekly, every 3 weeks, monthly. Call or text for a free quote.',
     },
     h1: 'House cleaning in Uptown Dallas',
     lead: 'Apartment, condo and townhome cleaning in Uptown, planned around your building’s rules and your schedule.',
@@ -182,7 +182,7 @@ export const localPages: LocalPage[] = [
     city: 'highland-park',
     seo: {
       title: 'House Cleaning in Highland Park, TX | Maid Service | Chavez',
-      description: 'Detailed house cleaning and maid service for Highland Park homes: weekly, biweekly or every 4 weeks, with a written checklist. Call or text for a free quote.',
+      description: 'Detailed house cleaning and maid service for Highland Park homes: weekly, biweekly, every 3 weeks or monthly, with a written checklist. Call or text for a free quote.',
     },
     h1: 'House cleaning in Highland Park, TX',
     lead: 'A detailed, checklist-based house cleaning for Highland Park’s larger homes, on the schedule that suits your household.',

@@ -27,7 +27,7 @@ const homeServices = services.filter((s) => s.track === 'home');
 const bizServices = services.filter((s) => s.track === 'business');
 
 const compare = [
-  { s: 'house-cleaning', what: 'Kitchen, bathrooms, bedrooms, living areas and floors', when: 'Regular upkeep or a one-time refresh', how: 'One time, weekly, biweekly or every 4 weeks' },
+  { s: 'house-cleaning', what: 'Kitchen, bathrooms, bedrooms, living areas and floors', when: 'Regular upkeep or a one-time refresh', how: 'One time, weekly, biweekly, every 3 weeks or monthly' },
   { s: 'deep-cleaning', what: 'Everything above + fixtures, trim, baseboards, vents, blinds and built-up grime', when: 'First visit, seasonal reset, before hosting', how: 'Once or twice a year' },
   { s: 'move-in-move-out-cleaning', what: 'Empty-home deep clean, inside cabinets, closets and appliances', when: 'Lease end, selling or moving in', how: 'Once, around your move date' },
   { s: 'office-cleaning', what: 'Workstations, restrooms, break room, reception and floors', when: 'Offices, studios and small commercial spaces', how: '1–3+ visits a week, after hours' },
@@ -43,10 +43,10 @@ const chat = [
 ];
 
 const faqs = [
-  { q: 'Which areas of Dallas do you serve?', a: 'We are based in East Dallas (75223) and clean homes and offices in Uptown, Lower Greenville, the M Streets, Swiss Avenue, Munger Place, Lakewood, Knox-Henderson, Oak Lawn, Deep Ellum, Downtown Dallas, Highland Park and University Park. For nearby cities, call or text us to check availability.' },
+  { q: 'Which areas of Dallas do you serve?', a: 'We are based in East Dallas (75223) and clean homes and offices in Uptown, Lower Greenville, the M Streets, Swiss Avenue, Munger Place, Lakewood, White Rock Lake, Knox-Henderson, Oak Lawn, Deep Ellum, Downtown Dallas, Highland Park and University Park, plus nearby cities: Richardson, Plano, Allen, Carrollton, Addison, Garland, Irving and Mesquite.' },
   { q: 'How much does house cleaning cost in Dallas?', a: 'It depends on the number of bedrooms and bathrooms, the size and condition of the home, the type of cleaning and any add-ons. Call or text (972) 330-0164 with those details and we send a free quote before you book.' },
-  { q: 'Do you clean offices?', a: 'Yes. We clean offices, studios and small commercial spaces in Uptown, Downtown, Deep Ellum and East Dallas, usually after hours, on a schedule built around your business.' },
-  { q: 'How often can I schedule a cleaning?', a: 'One time, weekly, biweekly or every 4 weeks. Most clients start with a deep cleaning, then move to biweekly visits.' },
+  { q: 'Do you clean offices?', a: 'Yes, offices are our main focus: dental offices, law firms, professional suites and studios in Uptown, Downtown, Deep Ellum, East Dallas and nearby cities, usually after hours, on a schedule built around your business.' },
+  { q: 'How often can I schedule a cleaning?', a: 'One time, weekly, biweekly, every 3 weeks or monthly. Most clients start with a deep cleaning, then move to biweekly visits.' },
   { q: 'Do you do laundry?', a: 'No, we do not offer laundry service. We focus on cleaning your home or office.' },
 ];
 
@@ -81,7 +81,7 @@ const quote = { text: 'Maria is dependable, professional, and friendly. She alwa
       <div class="hero-copy">
         <p class="chip"><Icon name="pin" size={16} /> Uptown · East Dallas · Park Cities</p>
         <h1 id="hero-h">House cleaning in Dallas, <em>done like it’s our own home</em></h1>
-        <p class="lead">Locally owned by Maria Chavez. Homes, apartments and offices: one time, weekly, biweekly or every 4 weeks.</p>
+        <p class="lead">Locally owned by Maria Chavez. Homes, apartments and offices: one time, weekly, biweekly, every 3 weeks or monthly.</p>
         <a class="call-card" href={SITE.phone.href} data-track="call_click">
           <span class="cc-ic"><Icon name="phone" size={22} /></span>
           <span><small>Call or text for a free quote</small><strong>{SITE.phone.display}</strong></span>
@@ -116,7 +116,7 @@ const quote = { text: 'Maria is dependable, professional, and friendly. She alwa
         <article class="track track--biz" data-reveal>
           <span class="track-ic"><Icon name="building" size={40} draw /></span>
           <h3>Offices, studios &amp; build-outs</h3>
-          <p>After-hours cleaning for offices in <a href="/services/office-cleaning/uptown/">Uptown</a>, <a href="/services/office-cleaning/downtown-dallas/">Downtown</a> and <a href="/services/office-cleaning/deep-ellum/">Deep Ellum</a>, on a schedule built around your hours.</p>
+          <p>After-hours cleaning for dental offices, law firms and small businesses in <a href="/services/office-cleaning/uptown/">Uptown</a>, <a href="/services/office-cleaning/downtown-dallas/">Downtown</a> and <a href="/services/office-cleaning/deep-ellum/">Deep Ellum</a>, on a schedule built around your hours.</p>
           <ul class="track-links">
             {bizServices.map((s) => <li><a href={serviceUrl(s.slug)}>{s.name}<Icon name="arrow" size={18} /></a></li>)}
           </ul>
@@ -245,7 +245,7 @@ const quote = { text: 'Maria is dependable, professional, and friendly. She alwa
         <div class="areas-list">
           <h3>Core neighborhoods</h3>
           <ul class="area-chips" tabindex="0" aria-label="Core neighborhoods">{areas.filter((a) => a.hub).map((a) => <li>{a.name}</li>)}</ul>
-          <h3>Nearby cities, on request</h3>
+          <h3>Nearby cities we serve</h3>
           <ul class="area-chips area-chips--soft" tabindex="0" aria-label="Nearby cities">{areas.filter((a) => !a.hub).map((a) => <li>{a.name}</li>)}</ul>
           <a class="btn btn--ghost" href="/service-areas/">All service areas<Icon name="arrow" /></a>
         </div>

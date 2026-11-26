@@ -24,7 +24,7 @@ export function businessNode(logoUrl: string, imageUrl: string) {
     logo: { '@type': 'ImageObject', url: logoUrl },
     image: imageUrl,
     description:
-      `Locally owned cleaning company in Dallas, Texas, run by Maria Chavez (${SITE.yearsInBusiness}+ years of cleaning experience): house cleaning, deep cleaning, weekly/biweekly/every-4-weeks cleaning, move-in/move-out cleaning, office cleaning and post-construction cleaning in Uptown, East Dallas, Lower Greenville, Swiss Avenue and the Park Cities.`,
+      `Locally owned cleaning company in Dallas, Texas, run by Maria Chavez (${SITE.yearsInBusiness}+ years of cleaning experience): house cleaning, deep cleaning, weekly/biweekly/every-3-weeks/monthly cleaning, move-in/move-out cleaning, office cleaning and post-construction cleaning in Uptown, East Dallas, Lower Greenville, Swiss Avenue and the Park Cities.`,
     founder: { '@type': 'Person', name: SITE.contactPerson },
     sameAs: [SITE.social.instagram, SITE.social.facebook, SITE.listings.bbb, SITE.listings.yelp, SITE.listings.google].filter(Boolean),
     contactPoint: {
@@ -43,7 +43,7 @@ export function businessNode(logoUrl: string, imageUrl: string) {
   node.hasMap = SITE.listings.google ?? undefined;
   if (SITE.openingHours) node.openingHours = SITE.openingHours;
   if (SITE.publishAreaServedInSchema) {
-    node.areaServed = areas.filter((a) => a.hub !== null).map((a) => ({ '@type': a.kind === 'City' ? 'City' : 'Place', name: a.kind === 'City' ? `${a.name}, TX` : `${a.name}, Dallas, TX` }));
+    node.areaServed = areas.map((a) => ({ '@type': a.kind === 'City' ? 'City' : 'Place', name: a.kind === 'City' ? `${a.name}, TX` : `${a.name}, Dallas, TX` }));
   }
   return node;
 }
